@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:int-file="http://www.springframework.org/schema/integration/file"
+	xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+                http://www.springframework.org/schema/integration/file http://www.springframework.org/schema/integration/file/spring-integration-file.xsd
+                http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+                http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+	<!-- Step 1 Read Files -->
+	<int-file:inbound-channel-adapter id="offerFilePicker"
+		channel="pickedFilesChannel" directory="${data.dir}"
+		scanner="recursiveOfferDirectoryScanner">
+		<int:poller fixed-delay="${files.pickup.delay:3000}"
+			max-messages-per-poll="${num.files.pickup.per.poll:20}" />
+	</int-file:inbound-channel-adapter>
+	<int:channel id="pickedFilesChannel">
+		<int:dispatcher task-executor="executor" />
+	</int:channel>
+
+	<!-- STEP 2 inject offer data into message -->
+	<int:service-activator id="offerPacker"
+		input-channel="pickedFilesChannel" output-channel="readyFilesChannel"
+		ref="filePickupHandler" />
+
+	<!-- queue feature is only for unit testing -->
+	<int:channel id="readyFilesChannel">
+	</int:channel>
+
+	<!-- Step 3 move file to HDFS based on offer message parameters -->
+	<int:service-activator id="fileIngester"
+		input-channel="readyFilesChannel" ref="ingester" output-channel="hdfsReadyChannel">
+	</int:service-activator>
+
+	<!-- queue feature is only for unit testing in Unit testing we pull from 
+		the last channel , that's why we are making it queue -->
+	<int:channel id="hdfsReadyChannel">
+		<int:queue />
+	</int:channel>
+	
+
+	<!-- SUPPORT -->
+	<int:channel-interceptor ref="noopChannelInterceptor" />
+
+	<task:executor id="executor" pool-size="${thread.pool.size:10}"
+		queue-capacity="${thread.pool.queue:10}" rejection-policy="CALLER_RUNS" />
+</beans>
