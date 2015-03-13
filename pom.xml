@@ -21,6 +21,7 @@
 		<module>lococommon</module>
 		<module>locohadoop</module>
 		<module>locoflow</module>
+		<module>locobatch</module>
 	</modules>
 
 	<properties>

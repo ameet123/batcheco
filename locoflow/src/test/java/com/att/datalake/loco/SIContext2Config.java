@@ -1,5 +1,6 @@
 package com.att.datalake.loco;
 
+import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -13,7 +14,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import com.att.datalake.loco.integration.activator.FilePickupHandler;
 import com.att.datalake.loco.integration.activator.Ingester;
 import com.att.datalake.loco.integration.hdfs.MoveToHdfs;
-
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
 
 /**
  * class for non-hadoop testing which allows us instantiation of spring context
@@ -44,11 +46,18 @@ public class SIContext2Config {
 	 */
 	@Bean
 	public Ingester ingester() {
-		return new Ingester(null);
+		return new Ingester(fileMover());
 	}
 
 	@Bean
 	public FilePickupHandler filePickupHandler() {
 		return new FilePickupHandler();
+	}
+	
+	@Bean
+	public MoveToHdfs fileMover() {
+	    MoveToHdfs fileMover = Mockito.mock(MoveToHdfs.class);
+	    Mockito.when(fileMover.move(anyString(), anyString(), anyBoolean())).thenReturn(true);
+	    return fileMover;
 	}
 }

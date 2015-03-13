@@ -14,6 +14,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.hibernate.engine.jdbc.internal.BasicFormatterImpl;
@@ -146,5 +147,14 @@ public class Utility {
 			padded.append(padChar);
 		}
 		return padded.toString();
+	}
+	/**
+	 * first remove any carriage return/line feed, then split on "," with optional spaces
+	 * @param s
+	 * @return
+	 */
+	public static List<String> getStringList(String s) {
+		String[] sArray = s.replaceAll("\\r\\n|\\r|\\n", " ").split(",\\s*");
+		return Arrays.asList(sArray);
 	}
 }

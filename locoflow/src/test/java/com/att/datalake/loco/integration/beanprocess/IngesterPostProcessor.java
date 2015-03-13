@@ -6,12 +6,16 @@ import static org.mockito.Matchers.anyString;
 import org.mockito.Mockito;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.stereotype.Component;
 
 import com.att.datalake.loco.integration.activator.Ingester;
 import com.att.datalake.loco.integration.hdfs.MoveToHdfs;
 
-@Component
+/**
+ * not used anymore, just left here for reference
+ * @author ac2211
+ *
+ */
+//@Component
 public class IngesterPostProcessor implements BeanPostProcessor {
 
 	@Override
