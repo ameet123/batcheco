@@ -11,47 +11,51 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.att.datalake.loco.offercriteria.model.PreProcSpec;
+import com.att.datalake.loco.preproc.builder.CommonBuilder;
+import com.att.datalake.loco.sqlgenerator.SQLClauseBuilder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+/**
+ * generate sql from {@link PreProcSpec}
+ * @author ac2211
+ *
+ */
 @ContextConfiguration
-public class PreProcParserTest extends AbstractTestNGSpringContextTests {
+public class ProeProcSqlTest extends AbstractTestNGSpringContextTests {
 
 	@Configuration
 	static class config {
 
 		@Bean
-		PreProcessingParser preProcessingParser() {
-			return new PreProcessingParser();
-		}
-		@Bean
 		public static Gson gson() {
 			return new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 		}
+		@Bean
+		public CommonBuilder commonBuilder() {
+			return new CommonBuilder();
+		}
+		@Bean
+		public SQLClauseBuilder sqlClauseBuilder() {
+			return new SQLClauseBuilder();
+		}
 	}
-	@Autowired
-	private Gson gson;
 	@Autowired
 	private PreProcessingParser pr;
 	private List<PreProcSpec> preProcList;
+	@Autowired
+	private CommonBuilder cb;
 	
 	@BeforeClass
 	public void init() {
 		pr.setPreProcFile("input/preproc.csv");
+		preProcList = pr.parse();
 	}
+	
 	@Test
-	public void testParse() {
-		preProcList = pr.parse();		
-		System.out.println("PreProc size:" + preProcList.size());
-		for (PreProcSpec o : preProcList) {
-			System.out.println(gson.toJson(o));
-			System.out.println(o.getOfferId());
-			
-//			for (Detail d : o.getDetails()) {
-//				System.out.println("criterionType:" + d.getCriterionType() + " ID:" + d.getCriterionId()
-//						+ " Apply Object:" + String.join(",", d.getCriterionApplyObject()) + " Values:"
-//						+ String.join(",", d.getCriterionValues()));
-//			}
+	public void testPreProc() {
+		for (PreProcSpec p: preProcList) {
+			cb.build(p);
 		}
 	}
 }

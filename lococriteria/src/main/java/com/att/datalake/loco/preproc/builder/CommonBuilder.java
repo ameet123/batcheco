@@ -1,18 +1,14 @@
 package com.att.datalake.loco.preproc.builder;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.att.datalake.loco.exception.LocoException;
 import com.att.datalake.loco.exception.OfferParserCode1100;
 import com.att.datalake.loco.offercriteria.model.PreProcSpec;
-import com.att.datalake.loco.sqlgenerator.SQLClauseBuilder;
 
 /**
  * Generate SQL from {@link PreProcSpec}
@@ -23,29 +19,27 @@ import com.att.datalake.loco.sqlgenerator.SQLClauseBuilder;
 @Component
 public class CommonBuilder {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CommonBuilder.class);
-	private String START_ALIAS = "`";
 	
-	
-	public String build(PreProcSpec spec) {
-		StringBuilder sb = new StringBuilder();
+	public void build(PreProcSpec spec) {
+
 		int prevStep = 0;
-		String alias = "a";
-		String select, from, table;
-		TableClauseBuilder tb;
+		TableClauseBuilder tb = new TableClauseBuilder();
 		// get the details since all the data is in detail
 		for (PreProcSpec.ProcDetail d : spec.getProcDetail()) {
 			LOGGER.debug("Building pre proc for step:{}", d.getStep());
 			if (d.getStep() != prevStep + 1) {
 				throw new LocoException(OfferParserCode1100.PREPROC_STEPS_NOT_IN_ORDER);
-			}
-			table = d.getLeftTable();
-			tb = new TableClauseBuilder(table, d.getLeftColumns(), START_ALIAS);
-			// make Select clause
-			select = tb.getSelect();
-			from = tb.getFrom();
-			alias = tb.getAlias();
+			}		
+			tb.addStep(d);
+			prevStep++;
 		}
-
-		return sb.toString();
+		print(tb);
+		
+	}
+	private void print(TableClauseBuilder tb) {
+		System.out.println("Items:"+tb.getSelectMap().size());
+		for (Entry<String, String> e: tb.getSelectMap().entrySet()) {
+			System.out.println("key=>"+e.getKey()+" val=>"+e.getValue());
+		}
 	}
 }
