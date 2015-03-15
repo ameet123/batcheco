@@ -150,11 +150,23 @@ public class Utility {
 	}
 	/**
 	 * first remove any carriage return/line feed, then split on "," with optional spaces
+	 * we need positive look ahead because we don't want to break up MOD(BAN, 1000) into multiple
+	 * tokens
+	 * (?=   => positive look ahead
+	 *   (   => start of look ahead pattern
+	 *   [^\\(] => anything but open parenthesis
+	 *   *     		=> zero or more times			 : This is MOD before "("
+	 *   \\(		=> match the open paren
+	 *   [^\\)]		=> anything but close paren
+	 *   *			=> zero or more times			:  This is BAN,1000
+	 *   \\)		=> match the close paren
+	 *   *			=> repeat thus matched pattern zero or more times
+	 *   [^\\)]*	=> followed by anything but close paren multiple times. just to ensure that there is no other paren
 	 * @param s
 	 * @return
 	 */
 	public static List<String> getStringList(String s) {
-		String[] sArray = s.replaceAll("\\r\\n|\\r|\\n", " ").split(",\\s*");
+		String[] sArray = s.replaceAll("\\r\\n|\\r|\\n", " ").split(",\\s*(?=([^\\(]*\\([^\\)]*\\))*[^\\)]*$)");
 		return Arrays.asList(sArray);
 	}
 }
