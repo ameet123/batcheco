@@ -15,6 +15,7 @@ import org.testng.annotations.Test;
 
 import com.att.datalake.loco.offercriteria.model.PreProcSpec;
 import com.att.datalake.loco.preproc.builder.CommonBuilder;
+import com.att.datalake.loco.preproc.builder.PredicateBuilder;
 import com.att.datalake.loco.preproc.builder.SelectColMapBuilder;
 import com.att.datalake.loco.preproc.builder.TableClauseBuilder;
 import com.att.datalake.loco.sqlgenerator.SQLClauseBuilder;
@@ -42,8 +43,11 @@ public class ProeProcSqlTest extends AbstractTestNGSpringContextTests {
 		}
 		@Bean
 		public SelectColMapBuilder selectColMapBuilder() {
-			System.out.println("Building bean select ------------");
 			return new SelectColMapBuilder();
+		}
+		@Bean
+		public PredicateBuilder predicateBuilder() {
+			return new PredicateBuilder();
 		}
 		@Bean
 		@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE, proxyMode = ScopedProxyMode.TARGET_CLASS)

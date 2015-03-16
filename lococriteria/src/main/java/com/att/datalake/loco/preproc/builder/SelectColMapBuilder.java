@@ -89,5 +89,4 @@ public class SelectColMapBuilder {
 		}
 		map.put(processedCol, (nullAlias) ? null : alias);
 	}
-
 }

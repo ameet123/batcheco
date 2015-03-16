@@ -1,5 +1,6 @@
 package com.att.datalake.loco.preproc.builder;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,8 @@ import com.att.datalake.loco.exception.OfferParserCode1100;
 import com.att.datalake.loco.offercriteria.model.PreProcOperation;
 import com.att.datalake.loco.offercriteria.model.PreProcSpec;
 import com.att.datalake.loco.sqlgenerator.SQLClauseBuilder;
+import com.att.datalake.loco.util.OfferParserUtil;
+import com.att.datalake.loco.util.Utility;
 
 /**
  * a class where based on list of columns and a table name, we can generate from
@@ -44,10 +47,10 @@ public class TableClauseBuilder {
 	@Autowired
 	private SelectColMapBuilder selectBuilder;
 	@Autowired
+	private PredicateBuilder predicateBuilder;
+	@Autowired
 	private SQLClauseBuilder sql;
 	private String alias;
-
-	private final String TRANSIENT_FILE_REGEX = "^FILE.*";
 	/**
 	 * for each relevant output table, store the map of select columns and
 	 * respective alias
@@ -57,58 +60,68 @@ public class TableClauseBuilder {
 	 * from table map is also generated as select above
 	 */
 	private Map<String, Map<String, String>> fromMapByTable;
+	/**
+	 * map of join predicates by aliases to be used for generating the where clause
+	 * key => output table, val=> Map of predicates made up of left=>right side
+	 * includes alias
+	 */
+	private Map<String, Map<String, String>> predicateMapByTable;
+	/**
+	 * we need a map of alias by table because in forming a WHERE clause predicate,
+	 * we need to know the matching table alias in case of a step involving
+	 * left side transient table
+	 */
+	private Map<String, String> aliasMapByTable;
 
 	/**
 	 * using {@link LinkedHashMap} to preserve the order of columns
 	 * initialize the select, from maps.
 	 */
 	public TableClauseBuilder() {
-		System.out.println("------ In TableClauseBuilder constructor NEW ---------");
+		LOGGER.trace("------ In TableClauseBuilder constructor NEW ---------");
 		alias = START_ALIAS;
 		selectMapByTable = new LinkedHashMap<String, Map<String, String>>();
 		fromMapByTable = new LinkedHashMap<String, Map<String, String>>();
+		predicateMapByTable = new LinkedHashMap<String, Map<String, String>>();
+		aliasMapByTable = new HashMap<String, String>();
 	}
 
 	/**
 	 * we iterate over all the records and group them in the order they appear
 	 * for specific processing. we collect all join operations and we collect
 	 * all the union operations
+	 * 0. initialize previous step variables
+	 * 1. iterate over steps/details
+	 * 2. for each, validate the step record
+	 * 3. process join or union as appropriate
 	 * 
 	 */
 	public void build(List<PreProcSpec.ProcDetail> details) {
-		String prevOutput = null, output, left;
+		String prevOutput = null;
 		char prevOp = 0;
-		int step = 0;
+		int prevStep = 0;
 		// iterate over the list of steps
 		for (PreProcSpec.ProcDetail d : details) {
-			left = d.getLeftTable();
-			output = d.getOutput();
 			// validation of data
-			validateChain(prevOutput, left, step, d.getStep());
+			validateChain(prevOutput, d.getLeftTable(), prevStep, d.getStep());
 
 			if (d.getOp() == PreProcOperation.JOIN.getValue()) {
 				// Process JOIN
-				processStep(d, prevOutput, prevOp);
+				processJoinStep(d, prevOutput, prevOp);
 			} else if (d.getOp() == PreProcOperation.UNION.getValue()) {
 				// Process Union
 			}
 			// set current to previous
-			prevOutput = output;
-			step = d.getStep();
+			prevOutput = d.getOutput();
+			prevStep = d.getStep();
 			prevOp = d.getOp();
 		}
 
-		// for DEBUG
-		LOGGER.debug("Size of Select Map:{}", selectMapByTable.size());
-		for (Entry<String, Map<String, String>> e : selectMapByTable.entrySet()) {
-			MapUtils.debugPrint(System.out, e.getKey(), e.getValue());
-		}
-		System.out.println("----------------------------------------");
-		LOGGER.debug("Size of from Map:{}", fromMapByTable.size());
-		for (Entry<String, Map<String, String>> e : fromMapByTable.entrySet()) {
-			MapUtils.debugPrint(System.out, e.getKey(), e.getValue());
-		}
+		if (LOGGER.isTraceEnabled()) {
+			debugPrint();
+		}		
 	}
+	
 
 	/**
 	 * based on the detail step,generate sql clauses and store them design: we
@@ -124,7 +137,7 @@ public class TableClauseBuilder {
 	 * @param d
 	 * @return
 	 */
-	public TableClauseBuilder processStep(PreProcSpec.ProcDetail d, String prevOutput, char prevOp) {
+	public TableClauseBuilder processJoinStep(PreProcSpec.ProcDetail d, String prevOutput, char prevOp) {
 		// prepare the maps for this step
 		setStepRelatedMaps(d, prevOutput, prevOp);
 		
@@ -132,12 +145,14 @@ public class TableClauseBuilder {
 		List<String> leftColumns = null;
 		String lAlias = null;
 		// process left if needed
-		if (!isTransient(d.getLeftTable())) {
+		if (!OfferParserUtil.isTransient(d.getLeftTable())) {
 			leftColumns = d.getLeftColumns();
 			lAlias = getNextAlias();
+			aliasMapByTable.put(d.getLeftTable(), lAlias);
 		}
 		List<String> rightColumns = d.getRightColumns();
 		String rAlias = getNextAlias();
+		aliasMapByTable.put(d.getRightTable(), rAlias);
 		LOGGER.debug("LEFT:{} ALIAS:{} right:{}, RALIAS:{}", d.getLeftTable(), lAlias, d.getRightTable(), rAlias);
 
 		// Process Select
@@ -151,8 +166,10 @@ public class TableClauseBuilder {
 		Map<String, String> fromMap = fromMapByTable.get(d.getOutput());
 		fromMap = buildFromMap(d, fromMap, rAlias, lAlias);
 
-//		 String select = sql.select(selectMap, null);
-		// LOGGER.info("**** {}", select);
+		// Process where predicates
+		Map<String, String> predicateMap = predicateMapByTable.get(d.getOutput());
+		predicateBuilder.build(d, predicateMap, rAlias, lAlias, aliasMapByTable);
+
 		return this;
 	}
 
@@ -169,6 +186,7 @@ public class TableClauseBuilder {
 			// add this to the selectMapByTable
 			selectMapByTable.put(d.getOutput(), new LinkedHashMap<String, String>());
 			fromMapByTable.put(d.getOutput(), new LinkedHashMap<String, String>());
+			predicateMapByTable.put(d.getOutput(), new LinkedHashMap<String, String>());
 		} else {
 			LOGGER.debug("Getting prev output:{} map", prevOutput);
 			selectMap = selectMapByTable.get(prevOutput);
@@ -182,8 +200,12 @@ public class TableClauseBuilder {
 			fromMapByTable.put(d.getOutput(), fromMap);
 			fromMapByTable.remove(prevOutput);
 			
-			LOGGER.debug("Removing select,from maps key:{} and adding that entry to new key:{}", prevOutput, d.getOutput());
+			// predicate
+			Map<String, String> predicateMap = predicateMapByTable.get(prevOutput);
+			predicateMapByTable.put(d.getOutput(), predicateMap);
+			predicateMapByTable.remove(prevOutput);
 			
+			LOGGER.debug("Removing select,from maps key:{} and adding that entry to new key:{}", prevOutput, d.getOutput());		
 		}
 	}
 
@@ -232,7 +254,7 @@ public class TableClauseBuilder {
 		if ((prevStep + 1) != currStep) {
 			throw new LocoException(OfferParserCode1100.PREPROC_STEPS_NOT_IN_ORDER);
 		}
-		if (StringUtils.isEmpty(p) || !isTransient(c)) {
+		if (StringUtils.isEmpty(p) || !OfferParserUtil.isTransient(c)) {
 			return;
 		}
 		LOGGER.debug("Checking output:{} current left:{}", p, c);
@@ -240,11 +262,26 @@ public class TableClauseBuilder {
 			throw new LocoException(OfferParserCode1100.PREPROC_IN_OUT_NOT_SEQUENTIAL);
 		}
 	}
-
-	private boolean isTransient(String table) {
-		return table.matches(TRANSIENT_FILE_REGEX);
+	/**
+	 * print the maps for all the sql clauses
+	 */
+	private void debugPrint() {
+		String underline = Utility.pad("-", 80, '-');
+		LOGGER.debug("Size of Select Map:{}", selectMapByTable.size());
+		for (Entry<String, Map<String, String>> e : selectMapByTable.entrySet()) {
+			MapUtils.debugPrint(System.out, e.getKey(), e.getValue());
+		}
+		System.out.println(underline);
+		LOGGER.debug("Size of from Map:{}", fromMapByTable.size());
+		for (Entry<String, Map<String, String>> e : fromMapByTable.entrySet()) {
+			MapUtils.debugPrint(System.out, e.getKey(), e.getValue());
+		}
+		System.out.println(underline);
+		LOGGER.debug("Size of from Map:{}", predicateMapByTable.size());
+		for (Entry<String, Map<String, String>> e : predicateMapByTable.entrySet()) {
+			MapUtils.debugPrint(System.out, e.getKey(), e.getValue());
+		}
 	}
-
 	private String getNextAlias() {
 		alias = String.valueOf((char) (alias.charAt(0) + 1));
 		return alias;
