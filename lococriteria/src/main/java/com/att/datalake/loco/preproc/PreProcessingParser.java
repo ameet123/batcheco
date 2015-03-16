@@ -16,6 +16,7 @@ import org.springframework.util.StringUtils;
 
 import com.att.datalake.loco.exception.LocoException;
 import com.att.datalake.loco.exception.OfferParserCode1100;
+import com.att.datalake.loco.offercriteria.model.PreProcOperation;
 import com.att.datalake.loco.offercriteria.model.PreProcSpec;
 import com.att.datalake.loco.offercriteria.model.PreProcSpec.ProcDetail;
 import com.att.datalake.loco.util.Utility;
@@ -29,19 +30,6 @@ import com.att.datalake.loco.util.Utility;
 @Component
 public class PreProcessingParser {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PreProcessingParser.class);
-
-	public enum PreProcessingOP {
-		JOIN('M'), UNION('C');
-		private char value;
-
-		private PreProcessingOP(char value) {
-			this.value = value;
-		}
-
-		public char getValue() {
-			return value;
-		}
-	}
 
 	private String preProcFile;
 	private CSVFormat preProcFmt = CSVFormat.DEFAULT.withHeader("offerId", "step", "leftTable", "leftColumns",
@@ -91,7 +79,7 @@ public class PreProcessingParser {
 			char c = record.get("op").charAt(0);
 			d.setOp(c);
 			if (!Character.isLetter(c)
-					|| ((c != PreProcessingOP.JOIN.getValue()) && (c != PreProcessingOP.UNION.getValue()))) {
+					|| ((c != PreProcOperation.JOIN.getValue()) && (c != PreProcOperation.UNION.getValue()))) {
 				throw new LocoException(OfferParserCode1100.PREPROC_MERGE_OP_NOT_VALID);
 			}
 			d.setOpColumn(record.get("opColumn"));
