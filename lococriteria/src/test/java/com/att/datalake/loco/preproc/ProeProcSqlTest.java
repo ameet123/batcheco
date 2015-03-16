@@ -17,8 +17,10 @@ import com.att.datalake.loco.offercriteria.model.PreProcSpec;
 import com.att.datalake.loco.preproc.builder.CommonBuilder;
 import com.att.datalake.loco.preproc.builder.PredicateBuilder;
 import com.att.datalake.loco.preproc.builder.SelectColMapBuilder;
+import com.att.datalake.loco.preproc.builder.SqlFromComponentBuilder;
 import com.att.datalake.loco.preproc.builder.TableClauseBuilder;
 import com.att.datalake.loco.sqlgenerator.SQLClauseBuilder;
+import com.att.datalake.loco.sqlgenerator.SQLStatementBuilder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -42,8 +44,16 @@ public class ProeProcSqlTest extends AbstractTestNGSpringContextTests {
 			return new PreProcessingParser();
 		}
 		@Bean
+		public SQLStatementBuilder sQLStatementBuilder() {
+			return new SQLStatementBuilder();
+		}
+		@Bean
 		public SelectColMapBuilder selectColMapBuilder() {
 			return new SelectColMapBuilder();
+		}
+		@Bean
+		public SqlFromComponentBuilder sqlFromComponentBuilder() {
+			return new SqlFromComponentBuilder();
 		}
 		@Bean
 		public PredicateBuilder predicateBuilder() {

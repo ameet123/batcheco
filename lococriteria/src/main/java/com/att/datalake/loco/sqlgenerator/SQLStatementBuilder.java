@@ -83,7 +83,8 @@ public class SQLStatementBuilder {
 	 * @return 
 	 */
 	private boolean isAggregate() {
-		if (select.matches(".*SUM.*|.*MAX.*|.*MIN.*|.*COUNT.*|.*AVG.*")) {
+//		if (select.matches(".*SUM.*|.*MAX.*|.*MIN.*|.*COUNT.*|.*AVG.*")) {
+		if (select.matches(".*(?:SUM|MAX|MIN|COUNT|AVG)\\s*\\(.*")) {
 			// ensure that group by is done
 			if (Strings.isNullOrEmpty(group)) {
 				throw new LocoException(SqlBuilderCode1200.NO_GROUPBY_CLAUSE_SET);

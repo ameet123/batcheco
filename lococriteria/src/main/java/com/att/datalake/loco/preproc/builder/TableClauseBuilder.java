@@ -1,5 +1,6 @@
 package com.att.datalake.loco.preproc.builder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -50,6 +51,11 @@ public class TableClauseBuilder {
 	private PredicateBuilder predicateBuilder;
 	@Autowired
 	private SQLClauseBuilder sql;
+	@Autowired
+	private SqlFromComponentBuilder wholeBuilder;
+	/**
+	 * current alias by incrementing the ASCII value by 1
+	 */
 	private String alias;
 	/**
 	 * for each relevant output table, store the map of select columns and
@@ -72,6 +78,10 @@ public class TableClauseBuilder {
 	 * left side transient table
 	 */
 	private Map<String, String> aliasMapByTable;
+	/**
+	 * list of tables/files which need union operation
+	 */
+	private List<String> unionList;
 
 	/**
 	 * using {@link LinkedHashMap} to preserve the order of columns
@@ -84,6 +94,7 @@ public class TableClauseBuilder {
 		fromMapByTable = new LinkedHashMap<String, Map<String, String>>();
 		predicateMapByTable = new LinkedHashMap<String, Map<String, String>>();
 		aliasMapByTable = new HashMap<String, String>();
+		unionList = new ArrayList<String>();
 	}
 
 	/**
@@ -110,6 +121,8 @@ public class TableClauseBuilder {
 				processJoinStep(d, prevOutput, prevOp);
 			} else if (d.getOp() == PreProcOperation.UNION.getValue()) {
 				// Process Union
+				unionList.add(d.getLeftTable());
+				unionList.add(d.getRightTable());				
 			}
 			// set current to previous
 			prevOutput = d.getOutput();
@@ -119,7 +132,8 @@ public class TableClauseBuilder {
 
 		if (LOGGER.isTraceEnabled()) {
 			debugPrint();
-		}		
+		}	
+		buildSql();
 	}
 	
 
@@ -173,6 +187,12 @@ public class TableClauseBuilder {
 		return this;
 	}
 
+	/**
+	 * 1. generate select, from and where
+	 */
+	private void buildSql() {
+		wholeBuilder.build(this);
+	}
 	/**
 	 * if a new group is started, then get a new map, otherwise get the old one
 	 * The old one matches the previous output table/file
@@ -285,5 +305,61 @@ public class TableClauseBuilder {
 	private String getNextAlias() {
 		alias = String.valueOf((char) (alias.charAt(0) + 1));
 		return alias;
+	}
+
+	/**
+	 * @return the selectMapByTable
+	 */
+	public Map<String, Map<String, String>> getSelectMapByTable() {
+		return selectMapByTable;
+	}
+
+	/**
+	 * @param selectMapByTable the selectMapByTable to set
+	 */
+	public void setSelectMapByTable(Map<String, Map<String, String>> selectMapByTable) {
+		this.selectMapByTable = selectMapByTable;
+	}
+
+	/**
+	 * @return the fromMapByTable
+	 */
+	public Map<String, Map<String, String>> getFromMapByTable() {
+		return fromMapByTable;
+	}
+
+	/**
+	 * @param fromMapByTable the fromMapByTable to set
+	 */
+	public void setFromMapByTable(Map<String, Map<String, String>> fromMapByTable) {
+		this.fromMapByTable = fromMapByTable;
+	}
+
+	/**
+	 * @return the predicateMapByTable
+	 */
+	public Map<String, Map<String, String>> getPredicateMapByTable() {
+		return predicateMapByTable;
+	}
+
+	/**
+	 * @param predicateMapByTable the predicateMapByTable to set
+	 */
+	public void setPredicateMapByTable(Map<String, Map<String, String>> predicateMapByTable) {
+		this.predicateMapByTable = predicateMapByTable;
+	}
+
+	/**
+	 * @return the unionList
+	 */
+	public List<String> getUnionList() {
+		return unionList;
+	}
+
+	/**
+	 * @param unionList the unionList to set
+	 */
+	public void setUnionList(List<String> unionList) {
+		this.unionList = unionList;
 	}
 }

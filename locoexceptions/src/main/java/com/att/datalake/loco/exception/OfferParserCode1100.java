@@ -20,7 +20,8 @@ public enum OfferParserCode1100 implements ErrorCode {
 	RIGHT_TABLE_COLUMNS_NOTEXIST(1110, "no right table columns"),
 	PREPROC_STEPS_NOT_IN_ORDER(1111, "pre processing steps should be in sequential order"),
 	PREPROC_IN_OUT_NOT_SEQUENTIAL(1112,"output of a step needs to be the input of next for transient tables"),
-	PREPROC_OP_COL_NOT_FOUND_IN_SELECT_LIST(1113,"op column for join was not found in the select list of columns");
+	PREPROC_OP_COL_NOT_FOUND_IN_SELECT_LIST(1113,"op column for join was not found in the select list of columns"),
+	PREPROC_JOIN_TO_UNION_MISMATCH(1114,"no individual sql found for table from union list");
 
 	private final int number;
 	private final String description;
