@@ -212,19 +212,6 @@ public class PreProcProcessorData {
 		return alias;
 	}
 
-	// For NOW, later on we wneed to refactor
-	public Map<String, Map<String, String>> getSelectMapByTable() {
-		return selectMapByTable;
-	}
-
-	public Map<String, Map<String, String>> getFromMapByTable() {
-		return fromMapByTable;
-	}
-
-	public Map<String, Map<String, String>> getPredicateMapByTable() {
-		return predicateMapByTable;
-	}
-
 	public List<String> getUnionList() {
 		return unionList;
 	}
