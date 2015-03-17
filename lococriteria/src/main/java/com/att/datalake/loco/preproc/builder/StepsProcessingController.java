@@ -18,10 +18,6 @@ import com.att.datalake.loco.offercriteria.model.PreProcSpec;
  * for "join" and "union" operations matching the output of one step to the
  * input of the next
  * 
- * We need to use scope prototype, because we need new instantion of class the
- * reason being there are many maps - select, from, where which may be hard to
- * manage if not at class level, at least at the moment.
- * 
  * @author ac2211
  *
  */
