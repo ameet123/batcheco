@@ -90,8 +90,6 @@ public class ProeProcSqlTest extends AbstractTestNGSpringContextTests {
 	@Test
 	public void testPreProc() {
 		System.out.println("Size:"+preProcList.size());
-		for (PreProcSpec p: preProcList) {
-			cb.build(p);
-		}
+		cb.build(preProcList);
 	}
 }

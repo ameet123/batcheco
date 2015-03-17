@@ -33,6 +33,8 @@ public class SqlFromComponentBuilder {
 	/**
 	 * we wire {@link TableClauseBuilder} since we need three different maps -
 	 * select, from , where
+	 * we assume that there are equal number of entries in select, from, where maps
+	 * iterate over the entries in one map and get corresponding items from others
 	 * @param tb
 	 */
 	public String build(TableClauseBuilder tb) {
@@ -54,7 +56,7 @@ public class SqlFromComponentBuilder {
 			complete.doWhere(where);
 			String sql = complete.build();
 			tableSqlMap.put(e.getKey(), sql);
-			LOGGER.debug("{} SQL:\n{}", e.getKey(), Utility.prettyPrint(sql));
+			LOGGER.trace("{} SQL:\n{}", e.getKey(), Utility.prettyPrint(sql));
 		}
 		// now generate comprehensive sql involving union if needed
 		List<String> sqls = new ArrayList<String>();
@@ -69,7 +71,14 @@ public class SqlFromComponentBuilder {
 		if (sqls.size()>0) {
 			LOGGER.debug("Generating sql from union of {} sqls", sqls.size());
 			finalSql = sql.unionAll(sqls);	
-			LOGGER.debug("Final:\n{}", Utility.prettyPrint(finalSql));
+		} else {
+			// assume that the join operation was self-sufficient
+			// and only one entry was there
+			LOGGER.debug("Generating sql from just join operations of size:{}", tableSqlMap.size());
+			if (tableSqlMap.size() != 1) {
+				throw new LocoException(OfferParserCode1100.PREPROC_OPERATIONS_NOT_COMPLETE);
+			}
+			finalSql = tableSqlMap.values().iterator().next();
 		}
 		return finalSql;
 	}

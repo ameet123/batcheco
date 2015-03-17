@@ -21,7 +21,6 @@ import com.att.datalake.loco.exception.LocoException;
 import com.att.datalake.loco.exception.OfferParserCode1100;
 import com.att.datalake.loco.offercriteria.model.PreProcOperation;
 import com.att.datalake.loco.offercriteria.model.PreProcSpec;
-import com.att.datalake.loco.sqlgenerator.SQLClauseBuilder;
 import com.att.datalake.loco.util.OfferParserUtil;
 import com.att.datalake.loco.util.Utility;
 
@@ -43,14 +42,16 @@ import com.att.datalake.loco.util.Utility;
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class TableClauseBuilder {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TableClauseBuilder.class);
-	private String START_ALIAS = "`";
+	/**
+	 * starting alias which is one ASCII char less than lowercase 'a', 
+	 * this gives the first table an alias of a
+	 */
+	private final String START_ALIAS = "`";
 
 	@Autowired
 	private SelectColMapBuilder selectBuilder;
 	@Autowired
 	private PredicateBuilder predicateBuilder;
-	@Autowired
-	private SQLClauseBuilder sql;
 	@Autowired
 	private SqlFromComponentBuilder wholeBuilder;
 	/**
@@ -90,11 +91,12 @@ public class TableClauseBuilder {
 	public TableClauseBuilder() {
 		LOGGER.trace("------ In TableClauseBuilder constructor NEW ---------");
 		alias = START_ALIAS;
-		selectMapByTable = new LinkedHashMap<String, Map<String, String>>();
-		fromMapByTable = new LinkedHashMap<String, Map<String, String>>();
+		// initialize various data structures
+		selectMapByTable 	= new LinkedHashMap<String, Map<String, String>>();
+		fromMapByTable 		= new LinkedHashMap<String, Map<String, String>>();
 		predicateMapByTable = new LinkedHashMap<String, Map<String, String>>();
-		aliasMapByTable = new HashMap<String, String>();
-		unionList = new ArrayList<String>();
+		aliasMapByTable 	= new HashMap<String, String>();
+		unionList 			= new ArrayList<String>();
 	}
 
 	/**
@@ -107,7 +109,7 @@ public class TableClauseBuilder {
 	 * 3. process join or union as appropriate
 	 * 
 	 */
-	public void build(List<PreProcSpec.ProcDetail> details) {
+	public String build(List<PreProcSpec.ProcDetail> details) {
 		String prevOutput = null;
 		char prevOp = 0;
 		int prevStep = 0;
@@ -133,7 +135,7 @@ public class TableClauseBuilder {
 		if (LOGGER.isTraceEnabled()) {
 			debugPrint();
 		}	
-		buildSql();
+		return wholeBuilder.build(this);
 	}
 	
 
@@ -151,7 +153,7 @@ public class TableClauseBuilder {
 	 * @param d
 	 * @return
 	 */
-	public TableClauseBuilder processJoinStep(PreProcSpec.ProcDetail d, String prevOutput, char prevOp) {
+	private void processJoinStep(PreProcSpec.ProcDetail d, String prevOutput, char prevOp) {
 		// prepare the maps for this step
 		setStepRelatedMaps(d, prevOutput, prevOp);
 		
@@ -167,14 +169,11 @@ public class TableClauseBuilder {
 		List<String> rightColumns = d.getRightColumns();
 		String rAlias = getNextAlias();
 		aliasMapByTable.put(d.getRightTable(), rAlias);
-		LOGGER.debug("LEFT:{} ALIAS:{} right:{}, RALIAS:{}", d.getLeftTable(), lAlias, d.getRightTable(), rAlias);
+		LOGGER.debug("LEFT:{} left alias:{} right:{}, right alias:{}", d.getLeftTable(), lAlias, d.getRightTable(), rAlias);
 
 		// Process Select
 		Map<String, String> selectMap = selectMapByTable.get(d.getOutput());
 		selectMap = selectBuilder.build(selectMap, rightColumns, rAlias, leftColumns, lAlias);
-		if (LOGGER.isTraceEnabled()) {
-			MapUtils.debugPrint(System.out, d.getOutput(), selectMap);
-		}
 		
 		// Process From
 		Map<String, String> fromMap = fromMapByTable.get(d.getOutput());
@@ -183,15 +182,6 @@ public class TableClauseBuilder {
 		// Process where predicates
 		Map<String, String> predicateMap = predicateMapByTable.get(d.getOutput());
 		predicateBuilder.build(d, predicateMap, rAlias, lAlias, aliasMapByTable);
-
-		return this;
-	}
-
-	/**
-	 * 1. generate select, from and where
-	 */
-	private void buildSql() {
-		wholeBuilder.build(this);
 	}
 	/**
 	 * if a new group is started, then get a new map, otherwise get the old one
@@ -237,7 +227,7 @@ public class TableClauseBuilder {
 	 * @param lAlias
 	 * @return
 	 */
-	public Map<String, String> buildFromMap(PreProcSpec.ProcDetail d, Map<String, String> fromMap, String rAlias, String lAlias) {
+	private Map<String, String> buildFromMap(PreProcSpec.ProcDetail d, Map<String, String> fromMap, String rAlias, String lAlias) {
 		if (lAlias != null) {
 			fromMap.put(d.getLeftTable(), lAlias);
 		}
@@ -310,56 +300,26 @@ public class TableClauseBuilder {
 	/**
 	 * @return the selectMapByTable
 	 */
-	public Map<String, Map<String, String>> getSelectMapByTable() {
+	Map<String, Map<String, String>> getSelectMapByTable() {
 		return selectMapByTable;
 	}
-
-	/**
-	 * @param selectMapByTable the selectMapByTable to set
-	 */
-	public void setSelectMapByTable(Map<String, Map<String, String>> selectMapByTable) {
-		this.selectMapByTable = selectMapByTable;
-	}
-
 	/**
 	 * @return the fromMapByTable
 	 */
-	public Map<String, Map<String, String>> getFromMapByTable() {
+	Map<String, Map<String, String>> getFromMapByTable() {
 		return fromMapByTable;
 	}
-
-	/**
-	 * @param fromMapByTable the fromMapByTable to set
-	 */
-	public void setFromMapByTable(Map<String, Map<String, String>> fromMapByTable) {
-		this.fromMapByTable = fromMapByTable;
-	}
-
 	/**
 	 * @return the predicateMapByTable
 	 */
-	public Map<String, Map<String, String>> getPredicateMapByTable() {
+	Map<String, Map<String, String>> getPredicateMapByTable() {
 		return predicateMapByTable;
-	}
-
-	/**
-	 * @param predicateMapByTable the predicateMapByTable to set
-	 */
-	public void setPredicateMapByTable(Map<String, Map<String, String>> predicateMapByTable) {
-		this.predicateMapByTable = predicateMapByTable;
 	}
 
 	/**
 	 * @return the unionList
 	 */
-	public List<String> getUnionList() {
+	List<String> getUnionList() {
 		return unionList;
-	}
-
-	/**
-	 * @param unionList the unionList to set
-	 */
-	public void setUnionList(List<String> unionList) {
-		this.unionList = unionList;
 	}
 }
