@@ -1,4 +1,4 @@
-package com.att.datalake.loco.preproc.builder;
+package com.att.datalake.loco.preproc.builder.step;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

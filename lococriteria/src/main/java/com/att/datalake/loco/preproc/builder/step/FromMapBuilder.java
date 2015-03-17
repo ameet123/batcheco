@@ -1,4 +1,4 @@
-package com.att.datalake.loco.preproc.builder;
+package com.att.datalake.loco.preproc.builder.step;
 
 import java.util.Map;
 
