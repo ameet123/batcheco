@@ -68,7 +68,7 @@
 	<!-- Application Loggers -->
 
 	<logger name="com.att.datalake.loco">
-		<level value="debug" />
+		<level value="trace" />
 		<appender-ref ref="FILE" />
 	</logger>
 

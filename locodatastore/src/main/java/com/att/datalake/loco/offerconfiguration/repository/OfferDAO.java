@@ -1,5 +1,7 @@
 package com.att.datalake.loco.offerconfiguration.repository;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.testng.util.Strings;
@@ -47,6 +49,12 @@ public class OfferDAO {
 			throw new LocoException(OfferRepoCode1600.OFFER_TO_SAVE_IS_NULL);
 		}
 		return offerRepo.save(o);
+	}
+	public List<Offer> saveOffer(List<Offer> offers) {
+		if (offers == null) {
+			throw new LocoException(OfferRepoCode1600.OFFER_TO_SAVE_IS_NULL);
+		}
+		return offerRepo.save(offers);
 	}
 	public void deleteOffer(String offerId) {
 		if (Strings.isNullOrEmpty(offerId)) {

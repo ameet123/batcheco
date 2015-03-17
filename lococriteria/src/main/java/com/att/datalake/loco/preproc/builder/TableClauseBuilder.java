@@ -89,7 +89,7 @@ public class TableClauseBuilder {
 	 * initialize the select, from maps.
 	 */
 	public TableClauseBuilder() {
-		LOGGER.trace("------ In TableClauseBuilder constructor NEW ---------");
+		LOGGER.trace("------ In TableClauseBuilder constructor ---------");
 		alias = START_ALIAS;
 		// initialize various data structures
 		selectMapByTable 	= new LinkedHashMap<String, Map<String, String>>();
@@ -119,19 +119,19 @@ public class TableClauseBuilder {
 			validateChain(prevOutput, d.getLeftTable(), prevStep, d.getStep());
 
 			if (d.getOp() == PreProcOperation.JOIN.getValue()) {
-				// Process JOIN
 				processJoinStep(d, prevOutput, prevOp);
 			} else if (d.getOp() == PreProcOperation.UNION.getValue()) {
-				// Process Union
 				unionList.add(d.getLeftTable());
 				unionList.add(d.getRightTable());				
 			}
-			// set current to previous
+			// set  previous to current
 			prevOutput = d.getOutput();
 			prevStep = d.getStep();
 			prevOp = d.getOp();
 		}
 
+		// out of the processing loop for all steps, we have the requisite maps built
+		// to construct the sql, we can print the maps for debug, if desired
 		if (LOGGER.isTraceEnabled()) {
 			debugPrint();
 		}	
@@ -141,7 +141,7 @@ public class TableClauseBuilder {
 
 	/**
 	 * based on the detail step,generate sql clauses and store them design: we
-	 * do the alias and map fetch here rather than in buildSelectMap() because,
+	 * do the alias and map fetch here in a common place because,
 	 * we will need the alias for "from" map as well. So we need to do it in a
 	 * common place outside "select" methods.
 	 * 
@@ -200,8 +200,7 @@ public class TableClauseBuilder {
 		} else {
 			LOGGER.debug("Getting prev output:{} map", prevOutput);
 			selectMap = selectMapByTable.get(prevOutput);
-			// replace the map matching prevOutput with a new entry for this
-			// output
+			// replace the map matching prevOutput with a new entry for this output
 			selectMapByTable.put(d.getOutput(), selectMap);
 			selectMapByTable.remove(prevOutput);
 			

@@ -33,6 +33,10 @@ public class Offer {
 	
 	@Column(length=20000)
 	String offerSql;
+	
+	@Column(length=20000)
+	String offerPreProcSql;
+	
 	/**
 	 * the criteria object {@link OfferSpecification} 
 	 * which is turned into a JSON string
@@ -92,6 +96,20 @@ public class Offer {
 	 */
 	public void setOfferSql(String offerSql) {
 		this.offerSql = offerSql;
+	}
+
+	/**
+	 * @return the offerPreProcSql
+	 */
+	public String getOfferPreProcSql() {
+		return offerPreProcSql;
+	}
+
+	/**
+	 * @param offerPreProcSql the offerPreProcSql to set
+	 */
+	public void setOfferPreProcSql(String offerPreProcSql) {
+		this.offerPreProcSql = offerPreProcSql;
 	}
 
 	/**
