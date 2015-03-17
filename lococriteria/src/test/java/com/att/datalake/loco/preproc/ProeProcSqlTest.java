@@ -14,7 +14,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.att.datalake.loco.offercriteria.model.PreProcSpec;
-import com.att.datalake.loco.preproc.builder.CommonBuilder;
+import com.att.datalake.loco.preproc.builder.AllPreProcSqlBuilder;
 import com.att.datalake.loco.preproc.builder.PredicateBuilder;
 import com.att.datalake.loco.preproc.builder.SelectColMapBuilder;
 import com.att.datalake.loco.preproc.builder.SqlFromComponentBuilder;
@@ -65,8 +65,8 @@ public class ProeProcSqlTest extends AbstractTestNGSpringContextTests {
 			return new TableClauseBuilder();
 		}
 		@Bean
-		public CommonBuilder commonBuilder() {
-			return new CommonBuilder();
+		public AllPreProcSqlBuilder commonBuilder() {
+			return new AllPreProcSqlBuilder();
 		}
 		@Bean
 		public SQLClauseBuilder sqlClauseBuilder() {
@@ -79,7 +79,7 @@ public class ProeProcSqlTest extends AbstractTestNGSpringContextTests {
 	private PreProcessingParser pr;
 	private List<PreProcSpec> preProcList;
 	@Autowired
-	private CommonBuilder cb;
+	private AllPreProcSqlBuilder cb;
 	
 	@BeforeClass
 	public void init() {

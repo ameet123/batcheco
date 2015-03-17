@@ -19,8 +19,8 @@ import com.att.datalake.loco.util.Utility;
  *
  */
 @Component
-public class CommonBuilder {
-	private static final Logger LOGGER = LoggerFactory.getLogger(CommonBuilder.class);
+public class AllPreProcSqlBuilder {
+	private static final Logger LOGGER = LoggerFactory.getLogger(AllPreProcSqlBuilder.class);
 	@Autowired
 	TableClauseBuilder tb;
 	
