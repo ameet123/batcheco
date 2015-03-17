@@ -26,7 +26,7 @@ import com.att.datalake.loco.util.Utility;
 public class AllPreProcSqlBuilder {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AllPreProcSqlBuilder.class);
 	@Autowired
-	TableClauseBuilder tb;
+	StepsProcessingController tb;
 	@Autowired
 	private OfferDAO offerdao;
 	private Map<String, String> offerSqlMap;

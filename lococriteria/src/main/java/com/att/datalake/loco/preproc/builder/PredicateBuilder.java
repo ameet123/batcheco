@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import com.att.datalake.loco.exception.LocoException;
 import com.att.datalake.loco.exception.OfferParserCode1100;
 import com.att.datalake.loco.offercriteria.model.PreProcOperation;
-import com.att.datalake.loco.offercriteria.model.PreProcSpec;
+import com.att.datalake.loco.offercriteria.model.PreProcProcessorData;
 import com.att.datalake.loco.util.OfferParserUtil;
 
 /**
@@ -25,28 +25,32 @@ public class PredicateBuilder {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PredicateBuilder.class);
 
 	/**
-	 * we choose to keep the right side as the key, since the left side may be the same for 
-	 * multiple records.
+	 * we choose to keep the right side as the key, since the left side may be
+	 * the same for multiple records.
+	 * 
 	 * @param d
 	 * @param predicateMap
 	 * @param rAlias
 	 * @param lAlias
 	 * @param aliasMap
 	 */
-	public void build(PreProcSpec.ProcDetail d, Map<String, String> predicateMap, String rAlias, String lAlias,
-			Map<String, String> aliasMap) {
-		LOGGER.debug("incoming for output:{} size:{}", d.getOutput(), predicateMap.size());
+	public void build(PreProcProcessorData processorDTO) {
+		LOGGER.debug("incoming for output:{} size:{}", processorDTO.getCurrentDetail().getOutput(), processorDTO
+				.getCurrentPredicateMap().size());
 		// don't do anything if union operation
-		if (d.getOp() == PreProcOperation.UNION.getValue()) {
+		if (processorDTO.getCurrentDetail().getOp() == PreProcOperation.UNION.getValue()) {
 			return;
 		}
-		String leftSide = getJoinColumn(d.getLeftColumns(), d.getLeftTable(), d.getMatchingTable(), d.getOpColumn(),
-				aliasMap);
-		String rightSide = getJoinColumn(d.getRightColumns(), d.getRightTable(), d.getMatchingTable(), d.getOpColumn(),
-				aliasMap);
-		
-		predicateMap.put(rightSide, leftSide);
-		LOGGER.debug("Output:{} left:{} right:{} outoigng size:{}", d.getOutput(), leftSide, rightSide, predicateMap.size());
+		String leftSide = getJoinColumn(processorDTO.getLeftColumns(), processorDTO.getCurrentDetail().getLeftTable(),
+				processorDTO.getCurrentDetail().getMatchingTable(), processorDTO.getCurrentDetail().getOpColumn(),
+				processorDTO.getStepAliasMap());
+		String rightSide = getJoinColumn(processorDTO.getRightColumns(), processorDTO.getCurrentDetail()
+				.getRightTable(), processorDTO.getCurrentDetail().getMatchingTable(), processorDTO.getCurrentDetail()
+				.getOpColumn(), processorDTO.getStepAliasMap());
+
+		processorDTO.getCurrentPredicateMap().put(rightSide, leftSide);
+		LOGGER.debug("Output:{} left:{} right:{} outoigng size:{}", processorDTO.getCurrentDetail().getOutput(),
+				leftSide, rightSide, processorDTO.getCurrentPredicateMap().size());
 	}
 
 	/**

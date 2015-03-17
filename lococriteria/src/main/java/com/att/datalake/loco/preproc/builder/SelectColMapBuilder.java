@@ -1,6 +1,5 @@
 package com.att.datalake.loco.preproc.builder;
 
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -8,6 +7,8 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import com.att.datalake.loco.offercriteria.model.PreProcProcessorData;
 
 @Component
 public class SelectColMapBuilder {
@@ -33,29 +34,28 @@ public class SelectColMapBuilder {
 	 * @param lAlias
 	 * @return
 	 */
-	public Map<String, String> build(Map<String, String> selectMap, List<String> rightColumns, String rAlias,
-			List<String> leftColumns, String lAlias) {
+	public Map<String, String> build(PreProcProcessorData processorDTO) {
 		// process left if needed
-		if (leftColumns != null) {
-			for (String c : leftColumns) {
-				processColumnAndAdd(c, lAlias, selectMap);
+		if (processorDTO.getLeftColumns() != null) {
+			for (String c : processorDTO.getLeftColumns()) {
+				processColumnAndAdd(c, processorDTO.getLeftAlias(), processorDTO.getCurrentSelectMap());
 			}
 		}
 		// do right, the key being, if we find the column already in map, skip
-		for (String c : rightColumns) {
+		for (String c : processorDTO.getRightColumns()) {
 			if (c.contains(" ")) {
 				LOGGER.debug("checking alias of right col:{}", c.split("\\s+")[1]);
-				if (selectMap.containsKey(c.split("\\s+")[1])) {
+				if (processorDTO.getCurrentSelectMap().containsKey(c.split("\\s+")[1])) {
 					continue;
 				}
 			} else {
-				if (selectMap.containsKey(c)) {
+				if (processorDTO.getCurrentSelectMap().containsKey(c)) {
 					continue;
 				}
 			}
-			processColumnAndAdd(c, rAlias, selectMap);
+			processColumnAndAdd(c, processorDTO.getRightAlias(), processorDTO.getCurrentSelectMap());
 		}
-		return selectMap;
+		return processorDTO.getCurrentSelectMap();
 	}
 
 	/**
