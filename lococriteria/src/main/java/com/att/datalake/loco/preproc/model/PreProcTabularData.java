@@ -47,7 +47,8 @@ public class PreProcTabularData {
 	/**
 	 * based on the step data, we set the left right columns and also adjust the
 	 * aliases
-	 * 
+	 * we keep this package private so that only {@link PreProcProcessorData} can call this
+	 * method
 	 * @param d
 	 */
 	void calibrate(PreProcSpec.ProcDetail d) {
