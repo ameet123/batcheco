@@ -65,7 +65,7 @@ public class StepsProcessingController {
 			if (d.getOp() == PreProcOperation.JOIN.getValue()) {
 				processJoinStep(processorDTO);
 			} else if (d.getOp() == PreProcOperation.UNION.getValue()) {
-				processorDTO.processUnion();
+				processUnionStep(processorDTO);
 			}
 			processorDTO.setStepCompletion();
 		}
@@ -83,5 +83,8 @@ public class StepsProcessingController {
 		selectBuilder.build(processorDTO);
 		fromBuilder.build(processorDTO);
 		predicateBuilder.build(processorDTO);
+	}
+	private void processUnionStep(PreProcProcessorData processorDTO) {
+		processorDTO.processUnion();
 	}
 }

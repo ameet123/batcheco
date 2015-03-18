@@ -67,24 +67,26 @@ public class PreProcProcessorData {
 	}
 
 	// Utility/Convenience methods
-	
-	
+
 	/**
-	 * for each step, when we calibrate, we also need to calibrate the columns and aliases
-	 * we just delegate this to the {@link PreProcTabularData} class
+	 * for each step, when we calibrate, we also need to calibrate the columns
+	 * and aliases we just delegate this to the {@link PreProcTabularData} class
 	 * so we don't need to worry what and how it sets those variables
-	 * essentially a new alias is generated if needed otherwise it's reset to null
-	 * and column list is updated if not transient
+	 * essentially a new alias is generated if needed otherwise it's reset to
+	 * null and column list is updated if not transient This can be used as a
+	 * local calibration provider method, in which we can hide class specific
+	 * processing that we don't want to expose to others
+	 * 
 	 * @param d
 	 */
-	public void calibrateTabular(PreProcSpec.ProcDetail d) {
+	public void calibrateLocal(PreProcSpec.ProcDetail d) {
 		tabularData.calibrate(d);
 	}
 
 	/**
-	 * to build from Map from current aliases and table names
-	 * this is detail and specific and as cuh is encapsulated here rather than delegating to 
-	 * and external method; it's really internal detail how it's done
+	 * to build from Map from current aliases and table names this is detail and
+	 * specific and as cuh is encapsulated here rather than delegating to and
+	 * external method; it's really internal detail how it's done
 	 */
 	public void buildFromMap() {
 		if (tabularData.getLeftAlias() != null) {
@@ -140,8 +142,10 @@ public class PreProcProcessorData {
 		unionList.add(currentDetail.getLeftTable());
 		unionList.add(currentDetail.getRightTable());
 	}
+
 	/**
 	 * prepare and return the output for consumption
+	 * 
 	 * @return
 	 */
 	public PreProcOutputData getOutput() {
@@ -160,8 +164,7 @@ public class PreProcProcessorData {
 	}
 
 	// Getters/Setters
-	
-	
+
 	/**
 	 * get the map matching the current step output table
 	 * 
@@ -178,7 +181,7 @@ public class PreProcProcessorData {
 	public Map<String, String> getCurrentPredicateMap() {
 		return predicateMapByTable.get(currentDetail.getOutput());
 	}
-	
+
 	public PreProcSpec.ProcDetail getCurrentDetail() {
 		return currentDetail;
 	}
@@ -186,10 +189,10 @@ public class PreProcProcessorData {
 	public void setCurrentDetail(PreProcSpec.ProcDetail d) {
 		this.currentDetail = d;
 	}
-	
+
 	public PreProcTabularData getTabularData() {
 		return tabularData;
-	}	
+	}
 
 	public String getPrevOutput() {
 		return prevOutput;

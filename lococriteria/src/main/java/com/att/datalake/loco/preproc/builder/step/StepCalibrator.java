@@ -39,7 +39,7 @@ public class StepCalibrator {
 			} else {
 				processorDTO.updateMapEntries(d.getOutput());
 			}
-			processorDTO.calibrateTabular(d);
+			processorDTO.calibrateLocal(d);
 		}
 	}
 
