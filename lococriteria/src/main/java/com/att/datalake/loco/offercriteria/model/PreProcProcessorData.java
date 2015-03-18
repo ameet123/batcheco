@@ -180,18 +180,19 @@ public class PreProcProcessorData {
 		this.currentDetail = d;
 	}
 
-	public List<PreProcOutputData> getOutput() {
-		List<PreProcOutputData> outputs = new ArrayList<PreProcOutputData>();
+	public PreProcOutputData getOutput() {
+		PreProcOutputData output = new PreProcOutputData();
+		output.setUnionItems(unionList);
 
 		for (Entry<String, Map<String, String>> e : selectMapByTable.entrySet()) {
-			PreProcOutputData output = new PreProcOutputData();
-			output.setTableKey(e.getKey());
-			output.setSelectMap(e.getValue());
-			output.setFromMap(fromMapByTable.get(e.getKey()));
-			output.setPredicateMap(predicateMapByTable.get(e.getKey()));
-			outputs.add(output);
+			PreProcOutputData.OutputDetailData d = new PreProcOutputData.OutputDetailData();
+			d.setTableKey(e.getKey());
+			d.setSelectMap(e.getValue());
+			d.setFromMap(fromMapByTable.get(e.getKey()));
+			d.setPredicateMap(predicateMapByTable.get(e.getKey()));
+			output.addOutputDetail(d);
 		}
-		return outputs;
+		return output;
 	}
 
 	/**
@@ -210,10 +211,6 @@ public class PreProcProcessorData {
 	private String getNextAlias() {
 		alias = String.valueOf((char) (alias.charAt(0) + 1));
 		return alias;
-	}
-
-	public List<String> getUnionList() {
-		return unionList;
 	}
 
 	public String getPrevOutput() {

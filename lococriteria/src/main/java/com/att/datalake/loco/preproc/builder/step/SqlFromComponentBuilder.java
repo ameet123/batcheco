@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 import com.att.datalake.loco.exception.LocoException;
 import com.att.datalake.loco.exception.OfferParserCode1100;
 import com.att.datalake.loco.offercriteria.model.PreProcOutputData;
+import com.att.datalake.loco.offercriteria.model.PreProcOutputData.OutputDetailData;
 import com.att.datalake.loco.offercriteria.model.PreProcProcessorData;
 import com.att.datalake.loco.sqlgenerator.SQLClauseBuilder;
 import com.att.datalake.loco.sqlgenerator.SQLStatementBuilder;
@@ -38,7 +39,8 @@ public class SqlFromComponentBuilder {
 		// to store generated sql to be used in union
 		Map<String, String> tableSqlMap = new HashMap<String, String>();
 		String select, from, where;
-		for (PreProcOutputData o : processorDTO.getOutput()) {
+		PreProcOutputData output = processorDTO.getOutput();
+		for (OutputDetailData o : output.getDetailData()) {
 			select = sql.select(o.getSelectMap(), null);
 			from = sql.from(o.getFromMap(), null);
 			List<String> predicates = new ArrayList<String>();
@@ -56,7 +58,7 @@ public class SqlFromComponentBuilder {
 
 		// now generate comprehensive sql involving union if needed
 		List<String> sqls = new ArrayList<String>();
-		for (String t : processorDTO.getUnionList()) {
+		for (String t : output.getUnionItems()) {
 			LOGGER.debug("Adding to Union:{}", t);
 			String sql = tableSqlMap.get(t);
 			if (StringUtils.isEmpty(sql)) {
