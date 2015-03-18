@@ -1,7 +1,6 @@
-package com.att.datalake.loco.offercriteria.model;
+package com.att.datalake.loco.preproc.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,16 +24,6 @@ import com.att.datalake.loco.util.Utility;
 public class PreProcProcessorData {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PreProcProcessorData.class);
 	/**
-	 * starting alias which is one ASCII char less than lowercase 'a', this
-	 * gives the first table an alias of a
-	 */
-	private final String START_ALIAS = "`";
-
-	/**
-	 * current alias by incrementing the ASCII value by 1
-	 */
-	private String alias;
-	/**
 	 * for each relevant output table, store the map of select columns and
 	 * respective alias
 	 */
@@ -50,12 +39,6 @@ public class PreProcProcessorData {
 	 */
 	private Map<String, Map<String, String>> predicateMapByTable;
 	/**
-	 * we need a map of alias by table because in forming a WHERE clause
-	 * predicate, we need to know the matching table alias in case of a step
-	 * involving left side transient table
-	 */
-	private Map<String, String> stepAliasMap;
-	/**
 	 * list of tables/files which need union operation
 	 */
 	private List<String> unionList;
@@ -70,21 +53,44 @@ public class PreProcProcessorData {
 
 	private int prevStep;
 
-	private List<String> leftColumns = null;
-	private String leftAlias = null;
-	private List<String> rightColumns;
-	private String rightAlias;
-
 	private PreProcSpec.ProcDetail currentDetail;
 
+	private PreProcTabularData tabularData;
+
 	public PreProcProcessorData() {
-		alias = START_ALIAS;
 		// initialize various data structures
 		selectMapByTable = new LinkedHashMap<String, Map<String, String>>();
 		fromMapByTable = new LinkedHashMap<String, Map<String, String>>();
 		predicateMapByTable = new LinkedHashMap<String, Map<String, String>>();
-		stepAliasMap = new HashMap<String, String>();
 		unionList = new ArrayList<String>();
+		tabularData = new PreProcTabularData();
+	}
+
+	// Utility/Convenience methods
+	
+	
+	/**
+	 * for each step, when we calibrate, we also need to calibrate the columns and aliases
+	 * we just delegate this to the {@link PreProcTabularData} class
+	 * so we don't need to worry what and how it sets those variables
+	 * essentially a new alias is generated if needed otherwise it's reset to null
+	 * and column list is updated if not transient
+	 * @param d
+	 */
+	public void calibrateTabular(PreProcSpec.ProcDetail d) {
+		tabularData.calibrate(d);
+	}
+
+	/**
+	 * to build from Map from current aliases and table names
+	 * this is detail and specific and as cuh is encapsulated here rather than delegating to 
+	 * and external method; it's really internal detail how it's done
+	 */
+	public void buildFromMap() {
+		if (tabularData.getLeftAlias() != null) {
+			getCurrentFromMap().put(getCurrentDetail().getLeftTable(), tabularData.getLeftAlias());
+		}
+		getCurrentFromMap().put(getCurrentDetail().getRightTable(), tabularData.getRightAlias());
 	}
 
 	/**
@@ -134,7 +140,28 @@ public class PreProcProcessorData {
 		unionList.add(currentDetail.getLeftTable());
 		unionList.add(currentDetail.getRightTable());
 	}
+	/**
+	 * prepare and return the output for consumption
+	 * @return
+	 */
+	public PreProcOutputData getOutput() {
+		PreProcOutputData output = new PreProcOutputData();
+		output.setUnionItems(unionList);
 
+		for (Entry<String, Map<String, String>> e : selectMapByTable.entrySet()) {
+			PreProcOutputData.OutputDetailData d = new PreProcOutputData.OutputDetailData();
+			d.setTableKey(e.getKey());
+			d.setSelectMap(e.getValue());
+			d.setFromMap(fromMapByTable.get(e.getKey()));
+			d.setPredicateMap(predicateMapByTable.get(e.getKey()));
+			output.addOutputDetail(d);
+		}
+		return output;
+	}
+
+	// Getters/Setters
+	
+	
 	/**
 	 * get the map matching the current step output table
 	 * 
@@ -151,27 +178,7 @@ public class PreProcProcessorData {
 	public Map<String, String> getCurrentPredicateMap() {
 		return predicateMapByTable.get(currentDetail.getOutput());
 	}
-
-	public Map<String, String> getStepAliasMap() {
-		return stepAliasMap;
-	}
-
-	public List<String> getLeftColumns() {
-		return leftColumns;
-	}
-
-	public String getLeftAlias() {
-		return leftAlias;
-	}
-
-	public List<String> getRightColumns() {
-		return rightColumns;
-	}
-
-	public String getRightAlias() {
-		return rightAlias;
-	}
-
+	
 	public PreProcSpec.ProcDetail getCurrentDetail() {
 		return currentDetail;
 	}
@@ -179,39 +186,10 @@ public class PreProcProcessorData {
 	public void setCurrentDetail(PreProcSpec.ProcDetail d) {
 		this.currentDetail = d;
 	}
-
-	public PreProcOutputData getOutput() {
-		PreProcOutputData output = new PreProcOutputData();
-		output.setUnionItems(unionList);
-
-		for (Entry<String, Map<String, String>> e : selectMapByTable.entrySet()) {
-			PreProcOutputData.OutputDetailData d = new PreProcOutputData.OutputDetailData();
-			d.setTableKey(e.getKey());
-			d.setSelectMap(e.getValue());
-			d.setFromMap(fromMapByTable.get(e.getKey()));
-			d.setPredicateMap(predicateMapByTable.get(e.getKey()));
-			output.addOutputDetail(d);
-		}
-		return output;
-	}
-
-	/**
-	 * update step alias with currently available data
-	 */
-	public void updateAliasMap() {
-		stepAliasMap.put(currentDetail.getLeftTable(), leftAlias);
-		stepAliasMap.put(currentDetail.getRightTable(), rightAlias);
-	}
-
-	/**
-	 * increment the current alias by adding 1 to the ASCII value
-	 * 
-	 * @return
-	 */
-	private String getNextAlias() {
-		alias = String.valueOf((char) (alias.charAt(0) + 1));
-		return alias;
-	}
+	
+	public PreProcTabularData getTabularData() {
+		return tabularData;
+	}	
 
 	public String getPrevOutput() {
 		return prevOutput;
@@ -227,26 +205,5 @@ public class PreProcProcessorData {
 
 	public void setPrevOp(char prevOp) {
 		this.prevOp = prevOp;
-	}
-	
-	public void incrementLeftAlias() {
-		this.leftAlias = getNextAlias();
-	}
-	public void incrementRightAlias() {
-		this.rightAlias = getNextAlias();
-	}
-	public void nullifyLeftAlias() {
-		this.leftAlias = null;
-	}
-	public void nullifyRightAlias() {
-		this.rightAlias = null;
-	}
-
-	public void setLeftColumns(List<String> leftColumns) {
-		this.leftColumns = leftColumns;
-	}
-
-	public void setRightColumns(List<String> rightColumns) {
-		this.rightColumns = rightColumns;
 	}
 }

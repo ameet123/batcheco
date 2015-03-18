@@ -7,15 +7,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.att.datalake.loco.offercriteria.model.PreProcOperation;
-import com.att.datalake.loco.offercriteria.model.PreProcProcessorData;
-import com.att.datalake.loco.offercriteria.model.PreProcSpec;
 import com.att.datalake.loco.preproc.builder.step.FromMapBuilder;
 import com.att.datalake.loco.preproc.builder.step.PredicateBuilder;
 import com.att.datalake.loco.preproc.builder.step.SelectColMapBuilder;
 import com.att.datalake.loco.preproc.builder.step.SqlFromComponentBuilder;
 import com.att.datalake.loco.preproc.builder.step.StepCalibrator;
 import com.att.datalake.loco.preproc.builder.step.StepValidator;
+import com.att.datalake.loco.preproc.model.PreProcOperation;
+import com.att.datalake.loco.preproc.model.PreProcProcessorData;
+import com.att.datalake.loco.preproc.model.PreProcSpec;
 
 /**
  * a class where based on list of columns and a table name, we can generate from

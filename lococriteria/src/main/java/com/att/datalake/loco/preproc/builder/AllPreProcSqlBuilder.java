@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.att.datalake.loco.offerconfiguration.model.Offer;
 import com.att.datalake.loco.offerconfiguration.repository.OfferDAO;
-import com.att.datalake.loco.offercriteria.model.PreProcSpec;
+import com.att.datalake.loco.preproc.model.PreProcSpec;
 import com.att.datalake.loco.util.Utility;
 
 /**

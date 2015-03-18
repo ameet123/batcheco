@@ -13,9 +13,9 @@ import org.springframework.util.StringUtils;
 
 import com.att.datalake.loco.exception.LocoException;
 import com.att.datalake.loco.exception.OfferParserCode1100;
-import com.att.datalake.loco.offercriteria.model.PreProcOutputData;
-import com.att.datalake.loco.offercriteria.model.PreProcOutputData.OutputDetailData;
-import com.att.datalake.loco.offercriteria.model.PreProcProcessorData;
+import com.att.datalake.loco.preproc.model.PreProcOutputData;
+import com.att.datalake.loco.preproc.model.PreProcProcessorData;
+import com.att.datalake.loco.preproc.model.PreProcOutputData.OutputDetailData;
 import com.att.datalake.loco.sqlgenerator.SQLClauseBuilder;
 import com.att.datalake.loco.sqlgenerator.SQLStatementBuilder;
 import com.att.datalake.loco.util.Utility;

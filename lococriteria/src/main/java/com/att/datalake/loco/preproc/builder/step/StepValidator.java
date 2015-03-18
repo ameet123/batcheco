@@ -7,7 +7,7 @@ import org.springframework.util.StringUtils;
 
 import com.att.datalake.loco.exception.LocoException;
 import com.att.datalake.loco.exception.OfferParserCode1100;
-import com.att.datalake.loco.offercriteria.model.PreProcProcessorData;
+import com.att.datalake.loco.preproc.model.PreProcProcessorData;
 import com.att.datalake.loco.util.OfferParserUtil;
 
 /**

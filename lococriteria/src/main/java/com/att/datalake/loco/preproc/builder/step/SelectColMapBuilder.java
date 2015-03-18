@@ -8,7 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.att.datalake.loco.offercriteria.model.PreProcProcessorData;
+import com.att.datalake.loco.preproc.model.PreProcProcessorData;
+import com.att.datalake.loco.preproc.model.PreProcTabularData;
 
 @Component
 public class SelectColMapBuilder {
@@ -35,14 +36,15 @@ public class SelectColMapBuilder {
 	 * @return
 	 */
 	public Map<String, String> build(PreProcProcessorData processorDTO) {
+		PreProcTabularData tabularData = processorDTO.getTabularData();
 		// process left if needed
-		if (processorDTO.getLeftColumns() != null) {
-			for (String c : processorDTO.getLeftColumns()) {
-				processColumnAndAdd(c, processorDTO.getLeftAlias(), processorDTO.getCurrentSelectMap());
+		if (tabularData.getLeftColumns() != null) {
+			for (String c : tabularData.getLeftColumns()) {
+				processColumnAndAdd(c, tabularData.getLeftAlias(), processorDTO.getCurrentSelectMap());
 			}
 		}
 		// do right, the key being, if we find the column already in map, skip
-		for (String c : processorDTO.getRightColumns()) {
+		for (String c : tabularData.getRightColumns()) {
 			if (c.contains(" ")) {
 				LOGGER.debug("checking alias of right col:{}", c.split("\\s+")[1]);
 				if (processorDTO.getCurrentSelectMap().containsKey(c.split("\\s+")[1])) {
@@ -53,7 +55,7 @@ public class SelectColMapBuilder {
 					continue;
 				}
 			}
-			processColumnAndAdd(c, processorDTO.getRightAlias(), processorDTO.getCurrentSelectMap());
+			processColumnAndAdd(c, tabularData.getRightAlias(), processorDTO.getCurrentSelectMap());
 		}
 		return processorDTO.getCurrentSelectMap();
 	}

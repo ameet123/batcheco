@@ -1,4 +1,4 @@
-package com.att.datalake.loco.offercriteria.model;
+package com.att.datalake.loco.preproc.model;
 
 import java.util.ArrayList;
 import java.util.List;

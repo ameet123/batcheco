@@ -12,9 +12,9 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.att.datalake.loco.offercriteria.model.PreProcSpec;
 import com.att.datalake.loco.preproc.builder.AllPreProcSqlBuilder;
 import com.att.datalake.loco.preproc.builder.step.SelectColMapBuilder;
+import com.att.datalake.loco.preproc.model.PreProcSpec;
 import com.att.datalake.loco.sqlgenerator.SQLClauseBuilder;
 import com.att.datalake.loco.sqlgenerator.SQLStatementBuilder;
 

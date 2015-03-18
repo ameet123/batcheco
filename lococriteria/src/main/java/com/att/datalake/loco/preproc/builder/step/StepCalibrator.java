@@ -2,10 +2,10 @@ package com.att.datalake.loco.preproc.builder.step;
 
 import org.springframework.stereotype.Component;
 
-import com.att.datalake.loco.offercriteria.model.PreProcOperation;
-import com.att.datalake.loco.offercriteria.model.PreProcProcessorData;
-import com.att.datalake.loco.offercriteria.model.PreProcSpec;
-import com.att.datalake.loco.util.OfferParserUtil;
+import com.att.datalake.loco.preproc.model.PreProcOperation;
+import com.att.datalake.loco.preproc.model.PreProcProcessorData;
+import com.att.datalake.loco.preproc.model.PreProcSpec;
+import com.att.datalake.loco.preproc.model.PreProcSpec.ProcDetail;
 
 /**
  * preprocessing steps required to set the variables in
@@ -39,33 +39,8 @@ public class StepCalibrator {
 			} else {
 				processorDTO.updateMapEntries(d.getOutput());
 			}
-
-			setTableLevelData(processorDTO, d);
+			processorDTO.calibrateTabular(d);
 		}
-	}
-
-	/**
-	 * adjusts the alias and column data as appropriate for passing to client
-	 * 
-	 * @param d
-	 */
-	private void setTableLevelData(PreProcProcessorData processorDTO, PreProcSpec.ProcDetail d) {
-		// process left if needed
-		if (!OfferParserUtil.isTransient(d.getLeftTable())) {
-			processorDTO.setLeftColumns(d.getLeftColumns());
-			processorDTO.incrementLeftAlias();
-		} else {
-			processorDTO.setLeftColumns(null);
-			processorDTO.nullifyLeftAlias();
-		}
-		if (!OfferParserUtil.isTransient(d.getRightTable())) {
-			processorDTO.setRightColumns(d.getRightColumns());
-			processorDTO.incrementRightAlias();
-		} else {
-			processorDTO.setRightColumns(null);
-			processorDTO.nullifyRightAlias();
-		}
-		processorDTO.updateAliasMap();
 	}
 
 	/**

@@ -1,4 +1,4 @@
-package com.att.datalake.loco.offercriteria.model;
+package com.att.datalake.loco.preproc.model;
 /**
  * type of valid operations allowed
  * @author ac2211

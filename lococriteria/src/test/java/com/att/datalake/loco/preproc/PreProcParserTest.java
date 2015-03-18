@@ -13,7 +13,7 @@ import org.springframework.util.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.att.datalake.loco.offercriteria.model.PreProcSpec;
+import com.att.datalake.loco.preproc.model.PreProcSpec;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

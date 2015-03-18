@@ -9,8 +9,9 @@ import org.springframework.stereotype.Component;
 
 import com.att.datalake.loco.exception.LocoException;
 import com.att.datalake.loco.exception.OfferParserCode1100;
-import com.att.datalake.loco.offercriteria.model.PreProcOperation;
-import com.att.datalake.loco.offercriteria.model.PreProcProcessorData;
+import com.att.datalake.loco.preproc.model.PreProcOperation;
+import com.att.datalake.loco.preproc.model.PreProcProcessorData;
+import com.att.datalake.loco.preproc.model.PreProcTabularData;
 import com.att.datalake.loco.util.OfferParserUtil;
 
 /**
@@ -35,18 +36,19 @@ public class PredicateBuilder {
 	 * @param aliasMap
 	 */
 	public void build(PreProcProcessorData processorDTO) {
+		PreProcTabularData tabularData = processorDTO.getTabularData();
 		LOGGER.debug("incoming for output:{} size:{}", processorDTO.getCurrentDetail().getOutput(), processorDTO
 				.getCurrentPredicateMap().size());
 		// don't do anything if union operation
 		if (processorDTO.getCurrentDetail().getOp() == PreProcOperation.UNION.getValue()) {
 			return;
 		}
-		String leftSide = getJoinColumn(processorDTO.getLeftColumns(), processorDTO.getCurrentDetail().getLeftTable(),
+		String leftSide = getJoinColumn(tabularData.getLeftColumns(), processorDTO.getCurrentDetail().getLeftTable(),
 				processorDTO.getCurrentDetail().getMatchingTable(), processorDTO.getCurrentDetail().getOpColumn(),
-				processorDTO.getStepAliasMap());
-		String rightSide = getJoinColumn(processorDTO.getRightColumns(), processorDTO.getCurrentDetail()
+				tabularData.getStepAliasMap());
+		String rightSide = getJoinColumn(tabularData.getRightColumns(), processorDTO.getCurrentDetail()
 				.getRightTable(), processorDTO.getCurrentDetail().getMatchingTable(), processorDTO.getCurrentDetail()
-				.getOpColumn(), processorDTO.getStepAliasMap());
+				.getOpColumn(), tabularData.getStepAliasMap());
 
 		processorDTO.getCurrentPredicateMap().put(rightSide, leftSide);
 		LOGGER.debug("Output:{} left:{} right:{} outoigng size:{}", processorDTO.getCurrentDetail().getOutput(),

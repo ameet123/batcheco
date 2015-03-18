@@ -7,7 +7,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.att.datalake.loco.offercriteria.model.PreProcSpec;
+import com.att.datalake.loco.preproc.model.PreProcSpec;
 
 /**
  * based on the {@link PreProcSpec} generated , generate a list of SQL 

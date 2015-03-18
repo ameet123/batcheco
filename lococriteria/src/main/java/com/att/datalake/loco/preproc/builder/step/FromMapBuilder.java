@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import com.att.datalake.loco.offercriteria.model.PreProcProcessorData;
+import com.att.datalake.loco.preproc.model.PreProcProcessorData;
 
 /**
  * build a map of from clauses from the tables passed and the aliases passed
@@ -25,12 +25,7 @@ public class FromMapBuilder {
 	 * @return
 	 */
 	public Map<String, String> build(PreProcProcessorData processorDTO) {
-		if (processorDTO.getLeftAlias() != null) {
-			processorDTO.getCurrentFromMap().put(processorDTO.getCurrentDetail().getLeftTable(),
-					processorDTO.getLeftAlias());
-		}
-		processorDTO.getCurrentFromMap().put(processorDTO.getCurrentDetail().getRightTable(),
-				processorDTO.getRightAlias());
+		processorDTO.buildFromMap();
 		return processorDTO.getCurrentFromMap();
 	}
 }
