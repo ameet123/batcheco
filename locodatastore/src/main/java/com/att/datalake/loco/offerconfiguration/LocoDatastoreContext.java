@@ -20,4 +20,5 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @ComponentScan("com.att.datalake.loco.offerconfiguration.repository")
 public class LocoDatastoreContext {
 
+
 }

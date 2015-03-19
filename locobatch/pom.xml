@@ -13,6 +13,16 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>com.att.datalake.locoparent</groupId>
+			<artifactId>lococriteria</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.att.datalake.locoparent</groupId>
+			<artifactId>locodatastore</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-batch</artifactId>
 		</dependency>

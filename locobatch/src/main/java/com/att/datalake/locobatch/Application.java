@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -37,32 +38,37 @@ public class Application {
 	private String user;
 	@Value("${spring.datasource.password}")
 	private String pass;
-	
+
 	@Autowired
 	private JobBuilderFactory jobBuilders;
 
 	@Autowired
 	private StepBuilderFactory stepBuilders;
 
+	@Autowired
+	private StepExecutionListener stepWatcher;
+
 	@Bean
 	public DataSource datasource() {
 		LOGGER.info("db url:{}", user, pass, url);
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		 dataSource.setUrl(url);
-		 dataSource.setUsername(user);
-		 dataSource.setPassword(pass);
+		dataSource.setUrl(url);
+		dataSource.setUsername(user);
+		dataSource.setPassword(pass);
 		return dataSource;
 	}
 
 	@Bean
 	public Job helloWorldJob() {
-		return jobBuilders.get("helloWorldJob").incrementer(new RunIdIncrementer()).flow(step()).next(step2()).end().build();
+		return jobBuilders.get("helloWorldJob").incrementer(new RunIdIncrementer()).flow(step()).next(step2()).end()
+				.build();
 	}
 
 	@Bean
 	public Step step() {
-		return stepBuilders.get("step5").allowStartIfComplete(true).tasklet(tasklet()).build();
+		return stepBuilders.get("step5").allowStartIfComplete(true).tasklet(tasklet()).listener(stepWatcher).build();
 	}
+
 	@Bean
 	public Step step2() {
 		return stepBuilders.get("step6").tasklet(tasklet2()).build();
@@ -72,6 +78,7 @@ public class Application {
 	public Tasklet tasklet() {
 		return new HelloWorld();
 	}
+
 	@Bean
 	public Tasklet tasklet2() {
 		return new Hello2();
