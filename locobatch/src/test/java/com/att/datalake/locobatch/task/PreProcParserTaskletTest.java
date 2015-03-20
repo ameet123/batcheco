@@ -9,7 +9,6 @@ import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteExcep
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -19,23 +18,16 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
 import com.att.datalake.locobatch.job.LocoJob;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 @Configuration
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = { PreProcParserTaskletTest.class })
 @EnableBatchProcessing
 @PropertySource("application.properties")
 @EnableAutoConfiguration
-@ComponentScan({ "com.att.datalake.locobatch.step", "com.att.datalake.locobatch.task",
-		"com.att.datalake.locobatch.job", "com.att.datalake.loco.preproc", "com.att.datalake.loco.sqlgenerator",
-		"com.att.datalake.loco.offerconfiguration" })
+@ComponentScan({ "com.att.datalake.locobatch.service", "com.att.datalake.locobatch.step",
+		"com.att.datalake.locobatch.task", "com.att.datalake.locobatch.job", "com.att.datalake.loco.preproc",
+		"com.att.datalake.loco.sqlgenerator", "com.att.datalake.loco.offerconfiguration" })
 public class PreProcParserTaskletTest extends AbstractTestNGSpringContextTests {
-
-	@Bean
-	public Gson gson() {
-		return new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-	}
 
 	@Autowired
 	private LocoJob job;
