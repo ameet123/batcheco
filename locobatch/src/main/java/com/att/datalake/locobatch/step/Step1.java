@@ -9,21 +9,24 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.att.datalake.locobatch.task.PreProcessorParserTasklet;
+import com.att.datalake.locobatch.task.PreValidationTasklet;
 
 @Component
-public class PreProcFileProcessingStep {
-	private static final Logger LOGGER = LoggerFactory.getLogger(PreProcFileProcessingStep.class);
+public class Step1 {
+	private static final Logger LOGGER = LoggerFactory.getLogger(Step1.class);
 	
 	@Autowired
 	private StepBuilderFactory stepBuilders;
 	@Autowired
-	private PreProcessorParserTasklet tasklet;
+	private PreProcessorParserTasklet tasklet1;
+	@Autowired
+	private PreValidationTasklet tasklet2;
 	@Value("${preproc.file:input/preproc.csv}")
 	private String preprocCsv;
 	
 	public Step build() {
 		LOGGER.debug("Preprocessing file:{}", preprocCsv);
-		tasklet.setFile(preprocCsv);
-		return stepBuilders.get("step-1:preproc-file-processing").allowStartIfComplete(true).tasklet(tasklet).build();
+		tasklet1.setFile(preprocCsv);
+		return stepBuilders.get("step-1:preproc-file-processing").allowStartIfComplete(true).tasklet(tasklet1).build();
 	}
 }

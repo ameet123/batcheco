@@ -6,7 +6,8 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.att.datalake.locobatch.step.PreProcFileProcessingStep;
+import com.att.datalake.locobatch.step.Step1;
+import com.att.datalake.locobatch.step.Step2;
 
 @Component
 public class LocoJob {
@@ -14,11 +15,12 @@ public class LocoJob {
 	@Autowired
 	private JobBuilderFactory jobBuilders;
 	@Autowired
-	private PreProcFileProcessingStep step1;
+	private Step1 step1;
+	@Autowired
+	private Step2 step2;
 
-	
 	public Job preProcessingJob() {
 		return jobBuilders.get("Job:Preprocessing parser job").incrementer(new RunIdIncrementer()).flow(step1.build())
-				.end().build();
+				.next(step2.build()).end().build();
 	}
 }

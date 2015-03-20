@@ -20,14 +20,14 @@ import org.testng.annotations.Test;
 import com.att.datalake.locobatch.job.LocoJob;
 
 @Configuration
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = { PreProcParserTaskletTest.class })
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = { LocoBatchJobTest.class })
 @EnableBatchProcessing
 @PropertySource("application.properties")
 @EnableAutoConfiguration
-@ComponentScan({ "com.att.datalake.locobatch.service", "com.att.datalake.locobatch.step",
+@ComponentScan({ "com.att.datalake.locobatch.service", "com.att.datalake.locobatch.step", "com.att.datalake.locobatch.shared",
 		"com.att.datalake.locobatch.task", "com.att.datalake.locobatch.job", "com.att.datalake.loco.preproc",
 		"com.att.datalake.loco.sqlgenerator", "com.att.datalake.loco.offerconfiguration" })
-public class PreProcParserTaskletTest extends AbstractTestNGSpringContextTests {
+public class LocoBatchJobTest extends AbstractTestNGSpringContextTests {
 
 	@Autowired
 	private LocoJob job;
