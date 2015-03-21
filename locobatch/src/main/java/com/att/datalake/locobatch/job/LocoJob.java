@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.att.datalake.locobatch.step.Step1;
 import com.att.datalake.locobatch.step.Step2;
+import com.att.datalake.locobatch.step.Step3;
 
 @Component
 public class LocoJob {
@@ -18,9 +19,15 @@ public class LocoJob {
 	private Step1 step1;
 	@Autowired
 	private Step2 step2;
+	@Autowired
+	private Step3 step3;
 
 	public Job preProcessingJob() {
-		return jobBuilders.get("Job:Preprocessing parser job").incrementer(new RunIdIncrementer()).flow(step1.build())
-				.next(step2.build()).end().build();
+		return jobBuilders.get("Job:Preprocessing parser job").incrementer(new RunIdIncrementer()).
+				flow(step1.build()).
+				next(step2.build()).
+				next(step3.build()).
+				end().
+				build();
 	}
 }

@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.att.datalake.loco.exception.LocoException;
+import com.att.datalake.loco.exception.OfferSqlConversionCode1300;
 import com.att.datalake.loco.offerconfiguration.model.Offer;
 import com.att.datalake.loco.offerconfiguration.repository.OfferDAO;
 import com.att.datalake.loco.preproc.model.PreProcSpec;
@@ -29,13 +31,14 @@ public class AllPreProcSqlBuilder {
 	StepsProcessingController tb;
 	@Autowired
 	private OfferDAO offerdao;
-	private Map<String, String> offerSqlMap;
+
 	/**
 	 * iterate over the offers and for each, generate a sql and store it in a map
 	 * @param specifications
+	 * @return 
 	 */
-	public void build(List<PreProcSpec> specifications) {
-		offerSqlMap = new HashMap<String, String>();
+	public Map<String, String> build(List<PreProcSpec> specifications) {
+		Map<String, String> offerSqlMap = new HashMap<String, String>();
 		String sql;
 		for (PreProcSpec p: specifications) {
 			sql = tb.build(p.getProcDetail());
@@ -43,7 +46,11 @@ public class AllPreProcSqlBuilder {
 			offerSqlMap.put(p.getOfferId(), sql);
 		}
 		LOGGER.debug("# of SQLs generated:{}", offerSqlMap.size());
+		if (specifications.size() != offerSqlMap.size()) {
+			throw new LocoException(OfferSqlConversionCode1300.PREPROC_SQL_TO_OFFERS_MISMATCH);
+		}
 		persist(offerSqlMap);
+		return offerSqlMap;
 	}
 	
 	/**

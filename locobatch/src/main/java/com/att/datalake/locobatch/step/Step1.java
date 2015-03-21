@@ -15,6 +15,8 @@ import com.att.datalake.locobatch.task.PreValidationTasklet;
 public class Step1 {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Step1.class);
 	
+	private final String STEP_NAME = "step-1:preproc-file-processing";
+	
 	@Autowired
 	private StepBuilderFactory stepBuilders;
 	@Autowired
@@ -27,6 +29,6 @@ public class Step1 {
 	public Step build() {
 		LOGGER.debug("Preprocessing file:{}", preprocCsv);
 		tasklet1.setFile(preprocCsv);
-		return stepBuilders.get("step-1:preproc-file-processing").allowStartIfComplete(true).tasklet(tasklet1).build();
+		return stepBuilders.get(STEP_NAME).allowStartIfComplete(true).tasklet(tasklet1).build();
 	}
 }

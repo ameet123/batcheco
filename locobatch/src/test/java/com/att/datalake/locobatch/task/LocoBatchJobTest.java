@@ -1,6 +1,7 @@
 package com.att.datalake.locobatch.task;
 
 import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.launch.JobLauncher;
@@ -38,6 +39,9 @@ public class LocoBatchJobTest extends AbstractTestNGSpringContextTests {
 	public void jobTest() throws JobExecutionAlreadyRunningException, JobRestartException,
 			JobInstanceAlreadyCompleteException, JobParametersInvalidException {
 		System.out.println("Running the test");
-		launcher.run(job.preProcessingJob(), new JobParameters());
+		JobParameters jobParameters = 
+				  new JobParametersBuilder()
+				  .addLong("time",System.currentTimeMillis()).toJobParameters();
+		launcher.run(job.preProcessingJob(), jobParameters);
 	}
 }

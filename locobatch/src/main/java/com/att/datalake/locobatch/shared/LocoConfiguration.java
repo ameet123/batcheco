@@ -28,29 +28,28 @@ public class LocoConfiguration {
 		RuntimeData data = configMap.get(offerId);
 		if (data == null) {
 			data = new RuntimeData();
-			data.setOfferId(offerId);
+			configMap.put(offerId, data);
 		}
 		return data;
+	}
+	
+	public void set(String offerId, RuntimeData data) {
+		configMap.put(offerId, data);
 	}
 	public Set<String> offerIterator() {
 		return configMap.keySet();
 	}
-	public void set(String offerId, RuntimeData data) {
-		configMap.put(offerId, data);
+	/**
+	 * # of entries packed 
+	 * @return
+	 */
+	public int count() {
+		return configMap.size();
 	}
 	
 	public static class RuntimeData {
-		private String offerId;
 		private PreProcSpec offerSpec;
 		private String preProcSql;
-
-		public String getOfferId() {
-			return offerId;
-		}
-
-		public void setOfferId(String offerId) {
-			this.offerId = offerId;
-		}
 
 		public PreProcSpec getOfferSpec() {
 			return offerSpec;
