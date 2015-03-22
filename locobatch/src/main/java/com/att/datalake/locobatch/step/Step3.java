@@ -1,9 +1,6 @@
 package com.att.datalake.locobatch.step;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,17 +13,27 @@ import com.att.datalake.locobatch.task.PreProcSqlgenTasklet;
  *
  */
 @Component
-public class Step3 {
-	private static final Logger LOGGER = LoggerFactory.getLogger(Step3.class);
+public class Step3 extends AbstractLocoStep {
 
 	private final String STEP_NAME = "step-3:preproc-sql-generation";
-	@Autowired
-	private StepBuilderFactory stepBuilders;
+	private final String STEP_DESCR = "generate sql for each offer based on parsed syntax file and store it in a bean for downstream processing";
+
 	@Autowired
 	private PreProcSqlgenTasklet tasklet3;
 
-	public Step build() {
-		LOGGER.debug("Preprocessing sql generation");
-		return stepBuilders.get(STEP_NAME).allowStartIfComplete(true).tasklet(tasklet3).build();
+
+	@Override
+	public String getDescrition() {
+		return STEP_DESCR;
+	}
+
+	@Override
+	public String getName() {
+		return STEP_NAME;
+	}
+
+	@Override
+	public Tasklet getTasklet() {
+		return tasklet3;
 	}
 }

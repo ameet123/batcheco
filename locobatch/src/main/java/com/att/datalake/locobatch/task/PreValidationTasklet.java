@@ -6,10 +6,6 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.StepContribution;
-import org.springframework.batch.core.scope.context.ChunkContext;
-import org.springframework.batch.core.step.tasklet.Tasklet;
-import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,8 +22,11 @@ import com.att.datalake.locobatch.shared.LocoConfiguration.RuntimeData;
  *
  */
 @Component
-public class PreValidationTasklet implements Tasklet {
+public class PreValidationTasklet extends AbstractLocoTasklet {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PreValidationTasklet.class);
+
+	private final String STEP_NAME = "step-2:preproc-file-validation";
+	private final String STEP_DESCR = "after processing the preprocessing syntax file, validate the parsing into object, ensure that columns are not broken into unintentional fragments";
 
 	@Autowired
 	private LocoConfiguration config;
@@ -38,13 +37,22 @@ public class PreValidationTasklet implements Tasklet {
 		columnValidationPattern = Pattern.compile("(^[^\\(]+|(?<=\\()[^\\)]+(?=\\)))");
 	}
 
+	@Override
+	public String getName() {
+		return STEP_NAME;
+	}
+
+	@Override
+	public String getDescr() {
+		return STEP_DESCR;
+	}
+
 	/**
 	 * fetch from {@link LocoConfiguration} and loop over all columns parsed, in
 	 * turn validating them
 	 */
 	@Override
-	public RepeatStatus execute(StepContribution arg0, ChunkContext arg1) throws Exception {
-
+	public void process() {
 		for (String offer : config.offerIterator()) {
 			// get runtimedata
 			RuntimeData d = config.get(offer);
@@ -54,9 +62,7 @@ public class PreValidationTasklet implements Tasklet {
 			}
 			LOGGER.debug("Offer:{} validated", offer);
 		}
-		return RepeatStatus.FINISHED;
 	}
-
 	private void validate(List<String> columns, String offer) {
 		Matcher m;
 		for (String c : columns) {

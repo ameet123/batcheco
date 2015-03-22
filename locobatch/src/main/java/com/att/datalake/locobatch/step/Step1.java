@@ -1,34 +1,37 @@
 package com.att.datalake.locobatch.step;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.att.datalake.locobatch.task.PreProcessorParserTasklet;
-import com.att.datalake.locobatch.task.PreValidationTasklet;
 
 @Component
-public class Step1 {
-	private static final Logger LOGGER = LoggerFactory.getLogger(Step1.class);
+public class Step1 extends AbstractLocoStep {
 	
 	private final String STEP_NAME = "step-1:preproc-file-processing";
-	
-	@Autowired
-	private StepBuilderFactory stepBuilders;
+	private final String STEP_DESCR = "given a file, process it into a schema object";
+
 	@Autowired
 	private PreProcessorParserTasklet tasklet1;
-	@Autowired
-	private PreValidationTasklet tasklet2;
+
 	@Value("${preproc.file:input/preproc.csv}")
 	private String preprocCsv;
-	
-	public Step build() {
-		LOGGER.debug("Preprocessing file:{}", preprocCsv);
+
+	@Override
+	public String getDescrition() {
+		return STEP_DESCR;
+	}
+
+	@Override
+	public String getName() {
+		return STEP_NAME;
+	}
+
+	@Override
+	public Tasklet getTasklet() {
 		tasklet1.setFile(preprocCsv);
-		return stepBuilders.get(STEP_NAME).allowStartIfComplete(true).tasklet(tasklet1).build();
+		return tasklet1;
 	}
 }

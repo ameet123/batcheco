@@ -2,10 +2,8 @@ package com.att.datalake.locobatch.task;
 
 import java.util.List;
 
-import org.springframework.batch.core.StepContribution;
-import org.springframework.batch.core.scope.context.ChunkContext;
-import org.springframework.batch.core.step.tasklet.Tasklet;
-import org.springframework.batch.repeat.RepeatStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,8 +20,11 @@ import com.google.gson.Gson;
  *
  */
 @Component
-public class PreProcessorParserTasklet implements Tasklet {
+public class PreProcessorParserTasklet extends AbstractLocoTasklet {
+	private static final Logger LOGGER = LoggerFactory.getLogger(PreProcessorParserTasklet.class);
 
+	private final String STEP_NAME = "step-1:preproc-file-processing";
+	private final String STEP_DESCR = "given a file, process it into a schema object";
 	@Autowired
 	private Gson gson;
 	@Autowired
@@ -36,13 +37,22 @@ public class PreProcessorParserTasklet implements Tasklet {
 	}
 
 	@Override
-	public RepeatStatus execute(StepContribution contrib, ChunkContext context) throws Exception {
+	public String getName() {
+		return STEP_NAME;
+	}
+
+	@Override
+	public String getDescr() {
+		return STEP_DESCR;
+	}
+
+	@Override
+	public void process() {
 		List<PreProcSpec> specs = pr.parse();
 		for (PreProcSpec p : specs) {
-			System.out.println(gson.toJson(p));
+			LOGGER.debug(gson.toJson(p));
 			RuntimeData data = config.get(p.getOfferId());
 			data.setOfferSpec(p);
-		}		
-		return RepeatStatus.FINISHED;
+		}
 	}
 }

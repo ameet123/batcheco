@@ -25,9 +25,10 @@ import com.att.datalake.locobatch.job.LocoJob;
 @EnableBatchProcessing
 @PropertySource("application.properties")
 @EnableAutoConfiguration
-@ComponentScan({ "com.att.datalake.locobatch.service", "com.att.datalake.locobatch.step", "com.att.datalake.locobatch.shared",
-		"com.att.datalake.locobatch.task", "com.att.datalake.locobatch.job", "com.att.datalake.loco.preproc",
-		"com.att.datalake.loco.sqlgenerator", "com.att.datalake.loco.offerconfiguration" })
+@ComponentScan({ "com.att.datalake.locobatch.service", "com.att.datalake.locobatch.step",
+		"com.att.datalake.locobatch.shared", "com.att.datalake.locobatch.listener", "com.att.datalake.locobatch.task",
+		"com.att.datalake.locobatch.job", "com.att.datalake.loco.preproc", "com.att.datalake.loco.sqlgenerator",
+		"com.att.datalake.loco.offerconfiguration" })
 public class LocoBatchJobTest extends AbstractTestNGSpringContextTests {
 
 	@Autowired
@@ -39,9 +40,8 @@ public class LocoBatchJobTest extends AbstractTestNGSpringContextTests {
 	public void jobTest() throws JobExecutionAlreadyRunningException, JobRestartException,
 			JobInstanceAlreadyCompleteException, JobParametersInvalidException {
 		System.out.println("Running the test");
-		JobParameters jobParameters = 
-				  new JobParametersBuilder()
-				  .addLong("time",System.currentTimeMillis()).toJobParameters();
+		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
+				.toJobParameters();
 		launcher.run(job.preProcessingJob(), jobParameters);
 	}
 }
