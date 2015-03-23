@@ -9,7 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
+import com.att.datalake.loco.offerconfiguration.model.Offer;
+import com.att.datalake.loco.offerconfiguration.repository.OfferDAO;
 import com.att.datalake.loco.preproc.builder.AllPreProcSqlBuilder;
 import com.att.datalake.loco.preproc.model.PreProcSpec;
 import com.att.datalake.locobatch.shared.LocoConfiguration;
@@ -32,6 +35,8 @@ public class PreProcSqlgenTasklet extends AbstractLocoTasklet {
 	private AllPreProcSqlBuilder preprocsqlBuilder;
 	@Autowired
 	private LocoConfiguration config;
+	@Autowired
+	private OfferDAO dao;
 
 	@Override
 	public String getName() {
@@ -55,11 +60,24 @@ public class PreProcSqlgenTasklet extends AbstractLocoTasklet {
 		Map<String, String> sqlMap = preprocsqlBuilder.build(specs);
 
 		LOGGER.debug("Generating sql for {} offers, sqls generated:{}", specs.size(), sqlMap.size());
+		String offerId, preProcSql;
 		// save the sql in config map
 		for (Entry<String, String> e : sqlMap.entrySet()) {
-			data = config.get(e.getKey());
+			offerId = e.getKey();
+			preProcSql = e.getValue();
+			data = config.get(offerId);
 			// pack the sql in runtime data
-			data.setPreProcSql(e.getValue());
+			data.setPreProcSql(preProcSql);
+			updateDb(offerId, preProcSql);
 		}
+	}
+	/**
+	 * save the generated preprocessing sql to the database
+	 */
+	private void updateDb(String offerId, String sql) {
+		Offer o = dao.findByOfferId(offerId);
+		o.setOfferPreProcSql(sql);
+		Offer saved = dao.saveOffer(o);
+		Assert.state(saved.getOfferPreProcSql().equals(sql));
 	}
 }

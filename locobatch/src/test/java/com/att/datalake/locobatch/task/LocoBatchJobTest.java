@@ -19,13 +19,18 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
 import com.att.datalake.locobatch.job.LocoJob;
-
+/**
+ * eclude filter is not workin
+ * , excludeFilters={ @Filter(type=FilterType.ASSIGNABLE_TYPE, value={com.att.datalake.locobatch.task.HiveProcessorTasklet.class} ) }
+ * @author ac2211
+ *
+ */
 @Configuration
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = { LocoBatchJobTest.class })
 @EnableBatchProcessing
 @PropertySource("application.properties")
 @EnableAutoConfiguration
-@ComponentScan({ "com.att.datalake.locobatch.service", "com.att.datalake.locobatch.step",
+@ComponentScan(basePackages={ "com.att.datalake.locobatch.service", "com.att.datalake.locobatch.step",
 		"com.att.datalake.locobatch.shared", "com.att.datalake.locobatch.listener", "com.att.datalake.locobatch.task",
 		"com.att.datalake.locobatch.job", "com.att.datalake.loco.preproc", "com.att.datalake.loco.sqlgenerator",
 		"com.att.datalake.loco.offerconfiguration" })

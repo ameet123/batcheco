@@ -2,9 +2,11 @@ package com.att.datalake.locobatch.shared;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import com.att.datalake.loco.preproc.model.PreProcSpec;
 
@@ -38,6 +40,19 @@ public class LocoConfiguration {
 	}
 	public Set<String> offerIterator() {
 		return configMap.keySet();
+	}
+	/**
+	 * return a map of offer id => preprocessing sql
+	 * @return
+	 */
+	public Map<String, String> getPreProcSqls() {
+		Map<String, String> sqls = new HashMap<String, String>();
+		for (Entry<String, RuntimeData> e: configMap.entrySet()) {
+			if (!StringUtils.isEmpty(e.getValue().getPreProcSql())) {
+				sqls.put(e.getKey(), e.getValue().getPreProcSql());
+			}
+		}
+		return sqls;
 	}
 	/**
 	 * # of entries packed 

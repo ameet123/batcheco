@@ -73,11 +73,11 @@
 	</logger>
 
 	<logger name="org.springframework">
-		<level value="warn" />
+		<level value="error" />
 		<appender-ref ref="FILE" />
 	</logger>
 	<logger name="org.springframework.context.annotation.ConfigurationClassEnhancer">
-		<level value="ERROR" />
+		<level value="error" />
 		<appender-ref ref="FILE" />
 	</logger>
 

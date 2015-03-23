@@ -1,9 +1,5 @@
 package com.att.datalake.locobatch;
 
-import javax.sql.DataSource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepExecutionListener;
@@ -20,7 +16,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import com.att.datalake.locobatch.task.Hello2;
 import com.att.datalake.locobatch.task.HelloWorld;
@@ -31,7 +26,7 @@ import com.att.datalake.locobatch.task.HelloWorld;
 @PropertySource("application.properties")
 @EnableAutoConfiguration
 public class Application {
-	private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
+
 	@Value("${spring.datasource.url}")
 	private String url;
 	@Value("${spring.datasource.username}")
@@ -48,15 +43,15 @@ public class Application {
 	@Autowired
 	private StepExecutionListener stepWatcher;
 
-	@Bean
-	public DataSource datasource() {
-		LOGGER.info("db url:{}", user, pass, url);
-		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setUrl(url);
-		dataSource.setUsername(user);
-		dataSource.setPassword(pass);
-		return dataSource;
-	}
+//	@Bean
+//	public DataSource datasource() {
+//		LOGGER.info("db url:{}", user, pass, url);
+//		DriverManagerDataSource dataSource = new DriverManagerDataSource();
+//		dataSource.setUrl(url);
+//		dataSource.setUsername(user);
+//		dataSource.setPassword(pass);
+//		return dataSource;
+//	}
 
 	@Bean
 	public Job helloWorldJob() {
