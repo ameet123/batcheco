@@ -25,8 +25,7 @@ import com.att.datalake.locobatch.shared.LocoConfiguration.RuntimeData;
 public class PreValidationTasklet extends AbstractLocoTasklet {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PreValidationTasklet.class);
 
-	private final String STEP_NAME = "step-2:preproc-file-validation";
-	private final String STEP_DESCR = "after processing the preprocessing syntax file, validate the parsing into object, ensure that columns are not broken into unintentional fragments";
+	private final String STEP_NAME = "step-12:preproc-file-validation";
 
 	@Autowired
 	private LocoConfiguration config;
@@ -41,12 +40,6 @@ public class PreValidationTasklet extends AbstractLocoTasklet {
 	public String getName() {
 		return STEP_NAME;
 	}
-
-	@Override
-	public String getDescr() {
-		return STEP_DESCR;
-	}
-
 	/**
 	 * fetch from {@link LocoConfiguration} and loop over all columns parsed, in
 	 * turn validating them

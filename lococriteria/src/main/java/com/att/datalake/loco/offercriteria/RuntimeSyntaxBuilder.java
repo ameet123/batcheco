@@ -1,7 +1,8 @@
 package com.att.datalake.loco.offercriteria;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,28 +31,33 @@ public class RuntimeSyntaxBuilder {
 	@Autowired
 	@Qualifier("commonOffer1")
 	private OfferBuilder commonOffer1;
-	
-	public List<String> build(List<OfferSpecification> offers) {
+	/**
+	 * given a list of offer specification, build a map 
+	 * of OfferID=>sql. 
+	 * @param offers
+	 * @return
+	 */
+	public Map<String, String> build(List<OfferSpecification> offers) {
 		String offerId;
-		List<String>  sqls = new ArrayList<String>();
+		Map<String, String> offerSqlMap = new HashMap<String, String>();
 		for (OfferSpecification o: offers) {
 			offerId = o.getOfferId();
 			String offerClass = OfferIdToImplMap.OFFER_BUILDER_MAP.get(offerId);
-			
-			
+			String sql = null;			
 			switch (offerClass) {
 			case "Offer1":
 				LOGGER.debug("Mapping impl class:{} for offer:{}", offerClass, offerId);
-				sqls.add(offer1.build(o.getDetails()));
+				sql = offer1.build(o.getDetails());
 				break;
 			case "CommonOffer1":
 				LOGGER.debug("Mapping impl class:{} for offer:{}", offerClass, offerId);
-				sqls.add(commonOffer1.build(o.getDetails()));
+				sql = commonOffer1.build(o.getDetails());
 				break;
 			default:
 				break;
 			}
+			offerSqlMap.put(offerId, sql);
 		}
-		return sqls;
+		return offerSqlMap;
 	}
 }

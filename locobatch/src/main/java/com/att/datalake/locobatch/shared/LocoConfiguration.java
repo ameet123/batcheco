@@ -50,6 +50,7 @@ public class LocoConfiguration {
 	public static class RuntimeData {
 		private PreProcSpec offerSpec;
 		private String preProcSql;
+		private String criteriaSql;
 
 		public PreProcSpec getOfferSpec() {
 			return offerSpec;
@@ -65,6 +66,14 @@ public class LocoConfiguration {
 
 		public void setPreProcSql(String preProcSql) {
 			this.preProcSql = preProcSql;
+		}
+
+		public String getCriteriaSql() {
+			return criteriaSql;
+		}
+
+		public void setCriteriaSql(String criteriaSql) {
+			this.criteriaSql = criteriaSql;
 		}
 	}
 }

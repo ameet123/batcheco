@@ -13,13 +13,13 @@ import com.att.datalake.locobatch.task.PreProcSqlgenTasklet;
  *
  */
 @Component
-public class Step3 extends AbstractLocoStep {
+public class Step13 extends AbstractLocoStep {
 
-	private final String STEP_NAME = "step-3:preproc-sql-generation";
+	private final String STEP_NAME = "step-13:preproc-sql-generation";
 	private final String STEP_DESCR = "generate sql for each offer based on parsed syntax file and store it in a bean for downstream processing";
 
 	@Autowired
-	private PreProcSqlgenTasklet tasklet3;
+	private PreProcSqlgenTasklet tasklet13;
 
 
 	@Override
@@ -34,6 +34,6 @@ public class Step3 extends AbstractLocoStep {
 
 	@Override
 	public Tasklet getTasklet() {
-		return tasklet3;
+		return tasklet13;
 	}
 }

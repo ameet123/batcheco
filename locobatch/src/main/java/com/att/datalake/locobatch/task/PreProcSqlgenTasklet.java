@@ -26,8 +26,7 @@ import com.att.datalake.locobatch.shared.LocoConfiguration.RuntimeData;
 public class PreProcSqlgenTasklet extends AbstractLocoTasklet {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PreProcSqlgenTasklet.class);
 
-	private final String STEP_NAME = "step-3:preproc-sql-generation";
-	private final String STEP_DESCR = "generate sql for each offer based on parsed syntax file and store it in a bean for downstream processing";
+	private final String STEP_NAME = "step-13:preproc-sql-generation";
 
 	@Autowired
 	private AllPreProcSqlBuilder preprocsqlBuilder;
@@ -37,11 +36,6 @@ public class PreProcSqlgenTasklet extends AbstractLocoTasklet {
 	@Override
 	public String getName() {
 		return STEP_NAME;
-	}
-
-	@Override
-	public String getDescr() {
-		return STEP_DESCR;
 	}
 
 	@Override

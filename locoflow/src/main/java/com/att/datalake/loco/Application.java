@@ -1,6 +1,9 @@
 package com.att.datalake.loco;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.Resource;
 
@@ -28,7 +31,7 @@ import com.att.datalake.loco.util.Utility;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-@ImportResource( {"hadoop.xml", "offer-context.xml"})
+@ImportResource({ "hadoop.xml", "offer-context.xml" })
 @Configuration
 @EnableAspectJAutoProxy
 public class Application implements CommandLineRunner {
@@ -63,7 +66,7 @@ public class Application implements CommandLineRunner {
 	@Value("${offer.file}")
 	private String filename;
 
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
 		// start the application
 		ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
 		context.registerShutdownHook();
@@ -84,14 +87,20 @@ public class Application implements CommandLineRunner {
 		System.out.println("Offers Found # " + offers.size());
 		System.out.println("\n\nStep 2: Build runtime Syntax from offer file\n\n");
 		System.out.println(Utility.pad("", 80, '='));
-		List<String> sqls = rb.build(offers);
+		Map<String, String> sqls = rb.build(offers);
 		System.out.println("\n\nStep 3: Execute Map/Reduce processing to build the offers\n\n");
 		System.out.println(equalLine);
 		int i = 1;
-		for (String s : sqls) {
-			System.out.println("Running Job # "+ (i++));
-			System.out.println(Utility.prettyPrint(s));
-			ProcessorResult pr = hp.run(sqls, false);
+		for (Entry<String, String> s : sqls.entrySet()) {
+			System.out.println("Running Job # " + (i++));
+			System.out.println(s.getKey() + "=>" + Utility.prettyPrint(s.getValue()));
+			ProcessorResult pr = hp.run(new ArrayList<String>() {
+				private static final long serialVersionUID = 1L;
+
+				{
+					add(s.getValue());
+				}
+			}, false);
 			System.out.println("Record count:" + pr.getRecordCount() + " Success:" + pr.isQuerySuccess());
 			if (!pr.isQuerySuccess()) {
 				System.exit(1);

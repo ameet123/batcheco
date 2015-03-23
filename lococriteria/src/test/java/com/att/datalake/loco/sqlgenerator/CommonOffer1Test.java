@@ -1,6 +1,8 @@
 package com.att.datalake.loco.sqlgenerator;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -74,9 +76,9 @@ public class CommonOffer1Test extends AbstractTestNGSpringContextTests {
 	@Test
 	public void testOffer1() {
 		List<OfferSpecification> offers = op.parse();
-		List<String> sqls = rb.build(offers);
-		for (String s: sqls) {
-			System.out.println(Utility.prettyPrint(s));
+		Map<String, String> sqls = rb.build(offers);
+		for (Entry<String, String> s: sqls.entrySet()) {
+			System.out.println(s.getKey()+"=>  "+ Utility.prettyPrint(s.getValue()));
 		}
 	}
 }

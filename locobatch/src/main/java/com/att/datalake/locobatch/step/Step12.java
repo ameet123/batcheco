@@ -7,12 +7,12 @@ import org.springframework.stereotype.Component;
 import com.att.datalake.locobatch.task.PreValidationTasklet;
 
 @Component
-public class Step2 extends AbstractLocoStep {
-	private final String STEP_NAME = "step-2:preproc-file-validation";
+public class Step12 extends AbstractLocoStep {
+	private final String STEP_NAME = "step-12:preproc-file-validation";
 	private final String STEP_DESCR = "after processing the preprocessing syntax file, validate the parsing into object, ensure that columns are not broken into unintentional fragments";
 
 	@Autowired
-	private PreValidationTasklet tasklet2;
+	private PreValidationTasklet tasklet12;
 
 
 	@Override
@@ -27,6 +27,6 @@ public class Step2 extends AbstractLocoStep {
 
 	@Override
 	public Tasklet getTasklet() {
-		return tasklet2;
+		return tasklet12;
 	}
 }

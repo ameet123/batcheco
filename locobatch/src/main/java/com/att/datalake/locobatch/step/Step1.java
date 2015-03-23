@@ -2,22 +2,18 @@ package com.att.datalake.locobatch.step;
 
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.att.datalake.locobatch.task.PreProcessorParserTasklet;
+import com.att.datalake.locobatch.task.CriteriaVerifierTasklet;
 
 @Component
 public class Step1 extends AbstractLocoStep {
 	
-	private final String STEP_NAME = "step-1:preproc-file-processing";
-	private final String STEP_DESCR = "given a file, process it into a schema object";
+	private final String STEP_NAME = "step-1:offer-criteria-verification";
+	private final String STEP_DESCR = "verify that the criteria sql is available in local and db configuration";
 
 	@Autowired
-	private PreProcessorParserTasklet tasklet1;
-
-	@Value("${preproc.file:input/preproc.csv}")
-	private String preprocCsv;
+	private CriteriaVerifierTasklet tasklet1;
 
 	@Override
 	public String getDescrition() {
@@ -31,7 +27,6 @@ public class Step1 extends AbstractLocoStep {
 
 	@Override
 	public Tasklet getTasklet() {
-		tasklet1.setFile(preprocCsv);
 		return tasklet1;
 	}
 }

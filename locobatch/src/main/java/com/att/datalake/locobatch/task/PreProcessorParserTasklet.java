@@ -23,8 +23,7 @@ import com.google.gson.Gson;
 public class PreProcessorParserTasklet extends AbstractLocoTasklet {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PreProcessorParserTasklet.class);
 
-	private final String STEP_NAME = "step-1:preproc-file-processing";
-	private final String STEP_DESCR = "given a file, process it into a schema object";
+	private final String STEP_NAME = "step-11:preproc-file-processing";
 	@Autowired
 	private Gson gson;
 	@Autowired
@@ -39,11 +38,6 @@ public class PreProcessorParserTasklet extends AbstractLocoTasklet {
 	@Override
 	public String getName() {
 		return STEP_NAME;
-	}
-
-	@Override
-	public String getDescr() {
-		return STEP_DESCR;
 	}
 
 	@Override

@@ -43,6 +43,9 @@ public class OfferDAO {
 		}
 		return offerRepo.findOne(id);
 	}
+	public List<Offer> findAllOffers() {
+		return offerRepo.findAll();
+	}
 	
 	public Offer saveOffer(Offer o) {
 		if (o == null) {

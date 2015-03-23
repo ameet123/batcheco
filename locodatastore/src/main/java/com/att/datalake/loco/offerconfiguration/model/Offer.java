@@ -32,7 +32,7 @@ public class Offer {
 	Date lastModified;
 	
 	@Column(length=20000)
-	String offerSql;
+	String offerCriteriaSql;
 	
 	@Column(length=20000)
 	String offerPreProcSql;
@@ -87,15 +87,15 @@ public class Offer {
 	/**
 	 * @return the offerSql
 	 */
-	public String getOfferSql() {
-		return offerSql;
+	public String getOfferCriteriaSql() {
+		return offerCriteriaSql;
 	}
 
 	/**
 	 * @param offerSql the offerSql to set
 	 */
-	public void setOfferSql(String offerSql) {
-		this.offerSql = offerSql;
+	public void setOfferCriteriaSql(String offerSql) {
+		this.offerCriteriaSql = offerSql;
 	}
 
 	/**

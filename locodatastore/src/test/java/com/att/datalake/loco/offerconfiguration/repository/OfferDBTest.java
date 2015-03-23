@@ -70,6 +70,20 @@ public class OfferDBTest extends AbstractTestNGSpringContextTests {
 		OfferComponent oc = offerDao.findByDirectory(LOCAL_DIR+"_1");
 		Assert.state(oc == null);
 	}
+	
+	@Test(dependsOnMethods = {"testFindNonExistentByDir"})
+	public void testFindAndUpdate() {
+		Offer o = offerDao.findByOfferId(offerId);
+		System.out.println("Original criteria:"+o.getOfferCriteria());
+		// change something
+		o.setOfferCriteria("XXX");
+		o = offerDao.saveOffer(o);
+		Assert.state(o.getOfferCriteria().equals("XXX"));
+		// reset it to original
+		o.setOfferCriteria(CRITERIA);
+		o = offerDao.saveOffer(o);
+		Assert.state(o.getOfferCriteria().equals(CRITERIA));
+	}
 	@AfterClass
 	public void testDelete() {
 		offerDao.deleteOffer(offerId);
