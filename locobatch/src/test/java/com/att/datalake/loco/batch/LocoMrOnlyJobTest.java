@@ -1,15 +1,19 @@
 package com.att.datalake.loco.batch;
 
+import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -18,12 +22,13 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
 
-import com.att.datalake.loco.batch.job.LocoMrOnlyJob;
 import com.att.datalake.loco.batch.shared.LocoConfiguration;
 import com.att.datalake.loco.batch.shared.LocoConfiguration.RuntimeData;
+import com.att.datalake.loco.batch.step.Step20;
 
 /**
  * just test whether we can run hive query
+ * NOTE: WE can't run it from eclipse, so this is not useful
  * @author ac2211
  *
  */
@@ -39,7 +44,23 @@ import com.att.datalake.loco.batch.shared.LocoConfiguration.RuntimeData;
 public class LocoMrOnlyJobTest extends AbstractTestNGSpringContextTests {
 
 	@Autowired
-	private LocoMrOnlyJob job;
+	private JobBuilderFactory jobBuilders;
+	@Autowired
+	private Step20 step20;
+	@Bean
+	public Job getMrTestingJob() {
+		RuntimeData data = new RuntimeData();
+		data.setPreProcSql("select count(*) from ameet.loco_offer1");
+		config.set("a123", data);
+		System.out.println("Running the test");
+		
+		return jobBuilders.get("Job:Pre-Processing sql hive execution job").incrementer(new RunIdIncrementer()).
+		flow(step20.build()).				
+		end().
+		build();
+	}	
+	@Autowired
+	private Job job;
 	@Autowired
 	JobLauncher launcher;
 	@Autowired
@@ -54,6 +75,6 @@ public class LocoMrOnlyJobTest extends AbstractTestNGSpringContextTests {
 		System.out.println("Running the test");
 		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
 				.toJobParameters();
-		launcher.run(job.preProcessingJob(), jobParameters);
+		launcher.run(job, jobParameters);
 	}
 }
