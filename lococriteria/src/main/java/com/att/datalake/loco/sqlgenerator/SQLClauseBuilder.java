@@ -20,7 +20,8 @@ import org.springframework.util.StringUtils;
 public class SQLClauseBuilder {
 	private SimpleDateFormat defaultDateFmt = new SimpleDateFormat("yyyy-MM-dd");
 	private SimpleDateFormat defaultTimestampFmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
+	private final static int AND_SUBTRACTOR = 5;
+	private final static int UNION_SUBTRACTOR = 11;
 	/**
 	 * predicate is of the form - COL_A [NOT IN|IN] ( 'v1', 'v2'...) as well as
 	 * join predicate a.id = b.id
@@ -41,7 +42,7 @@ public class SQLClauseBuilder {
 			sb.append(p);
 			sb.append(joiner);
 		}
-		sb.setLength(sb.length() - 5);
+		sb.setLength(sb.length() - AND_SUBTRACTOR);
 		return sb.toString();
 	}
 
@@ -59,7 +60,7 @@ public class SQLClauseBuilder {
 			sb.append(e.getValue());
 			sb.append(" AND ");
 		}
-		sb.setLength(sb.length() - 5);
+		sb.setLength(sb.length() - AND_SUBTRACTOR);
 		return sb.toString();
 	}
 
@@ -211,7 +212,7 @@ public class SQLClauseBuilder {
 			sb.append(s);
 			sb.append(" UNION ALL ");
 		}
-		sb.setLength(sb.length() - 11);
+		sb.setLength(sb.length() - UNION_SUBTRACTOR);
 		return sb.toString();
 	}
 

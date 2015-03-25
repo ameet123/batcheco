@@ -146,7 +146,10 @@ public class OfferDetailToSqlBridge {
 	}
 
 	public String unionFrom(String select1, String select2) {
-		int r = rn.nextInt(9000) + 1000; // random 4 digit number
+		// random 4 digit number
+		int FOUR_DIGIT_MIN = 1000;
+		int FOUR_DIGIT_MAX = 9000;
+		int r = rn.nextInt(FOUR_DIGIT_MAX) + FOUR_DIGIT_MIN; 
 		List<String> stmts = new ArrayList<String>();
 		stmts.add(select1);
 		stmts.add(select2);
