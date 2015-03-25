@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.testng.util.Strings;
+import org.springframework.util.StringUtils;
 
 import com.att.datalake.loco.exception.LocoException;
 import com.att.datalake.loco.exception.OfferRepoCode1600;
@@ -31,14 +31,14 @@ public class OfferDAO {
 	 * @return {@link OfferComponent}
 	 */
 	public OfferComponent findByDirectory(String dir) {
-		if (Strings.isNullOrEmpty(dir)) {
+		if (StringUtils.isEmpty(dir)) {
 			throw new LocoException(OfferRepoCode1600.LOCAL_DIR_NOT_VALID);
 		}
 		return compRepo.findByLocalDirectory(dir);
 	}
 	
 	public Offer findByOfferId(String id) {
-		if (Strings.isNullOrEmpty(id)) {
+		if (StringUtils.isEmpty(id)) {
 			throw new LocoException(OfferRepoCode1600.OFFER_ID_NOT_VALID);
 		}
 		return offerRepo.findOne(id);
@@ -60,7 +60,7 @@ public class OfferDAO {
 		return offerRepo.save(offers);
 	}
 	public void deleteOffer(String offerId) {
-		if (Strings.isNullOrEmpty(offerId)) {
+		if (StringUtils.isEmpty(offerId)) {
 			throw new LocoException(OfferRepoCode1600.OFFER_ID_NOT_VALID);
 		}
 		offerRepo.delete(offerId);

@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.springframework.stereotype.Component;
-import org.testng.util.Strings;
+import org.springframework.util.StringUtils;
 
 /**
  * wholistic class to build various clauses of SQL. the individual clauses are
@@ -187,7 +187,7 @@ public class SQLClauseBuilder {
 			if (inline) {
 				sb.append(")");
 			}
-			if (!Strings.isNullOrEmpty(e.getValue())) {
+			if (!StringUtils.isEmpty(e.getValue())) {
 				sb.append(fromAlias(e.getValue()));
 			}
 			sb.append(", ");

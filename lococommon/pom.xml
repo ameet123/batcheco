@@ -25,5 +25,9 @@
 			<artifactId>hibernate-core</artifactId>
 			<version>4.3.7.Final</version>
 		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
 	</dependencies>
 </project>

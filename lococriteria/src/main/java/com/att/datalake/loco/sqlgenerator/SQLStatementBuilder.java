@@ -2,7 +2,7 @@ package com.att.datalake.loco.sqlgenerator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.testng.util.Strings;
+import org.springframework.util.StringUtils;
 
 import com.att.datalake.loco.exception.LocoException;
 import com.att.datalake.loco.exception.SqlBuilderCode1200;
@@ -46,16 +46,16 @@ public class SQLStatementBuilder {
 		return this;
 	}
 	public String build() {
-		if (Strings.isNullOrEmpty(select)) {
+		if (StringUtils.isEmpty(select)) {
 			throw new LocoException(SqlBuilderCode1200.NO_SELECT_CLAUSE_SET);
-		} else if (Strings.isNullOrEmpty(from)) {
+		} else if (StringUtils.isEmpty(from)) {
 			throw new LocoException(SqlBuilderCode1200.NO_FROM_CLAUSE_SET);
 		}
 		sb.append(select);
 		sb.append(" ");
 		sb.append(from);
 		sb.append(" ");
-		if (!Strings.isNullOrEmpty(where)) {
+		if (!StringUtils.isEmpty(where)) {
 			sb.append(where);
 			sb.append(" ");
 		}
@@ -86,7 +86,7 @@ public class SQLStatementBuilder {
 //		if (select.matches(".*SUM.*|.*MAX.*|.*MIN.*|.*COUNT.*|.*AVG.*")) {
 		if (select.matches(".*(?:SUM|MAX|MIN|COUNT|AVG)\\s*\\(.*")) {
 			// ensure that group by is done
-			if (Strings.isNullOrEmpty(group)) {
+			if (StringUtils.isEmpty(group)) {
 				throw new LocoException(SqlBuilderCode1200.NO_GROUPBY_CLAUSE_SET);
 			}
 			return true;

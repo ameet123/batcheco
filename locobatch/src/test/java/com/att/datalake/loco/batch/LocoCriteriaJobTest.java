@@ -1,0 +1,49 @@
+package com.att.datalake.loco.batch;
+
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.Test;
+
+import com.att.datalake.loco.batch.job.LocoCriteriaJob;
+
+@Configuration
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = { LocoCriteriaJobTest.class })
+@EnableBatchProcessing
+@PropertySource("application.properties")
+@EnableAutoConfiguration
+@ComponentScan({ "com.att.datalake.loco.batch.service", "com.att.datalake.loco.batch.step",
+		"com.att.datalake.loco.batch.shared", "com.att.datalake.loco.batch.listener", "com.att.datalake.loco.batch.task",
+		"com.att.datalake.loco.batch.job", "com.att.datalake.loco.preproc", "com.att.datalake.loco.sqlgenerator",
+		"com.att.datalake.loco.offerconfiguration", "com.att.datalake.loco.offerconfiguration.repository",
+		"com.att.datalake.loco.offercriteria" })
+public class LocoCriteriaJobTest extends AbstractTestNGSpringContextTests {
+
+	@Autowired
+	private LocoCriteriaJob job;
+	@Autowired
+	JobLauncher launcher;
+
+
+	@Test
+	public void jobTest() throws JobExecutionAlreadyRunningException, JobRestartException,
+			JobInstanceAlreadyCompleteException, JobParametersInvalidException {
+		System.out.println("Running the test");
+		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
+				.toJobParameters();
+		launcher.run(job.preProcessingJob(), jobParameters);
+	}
+}
