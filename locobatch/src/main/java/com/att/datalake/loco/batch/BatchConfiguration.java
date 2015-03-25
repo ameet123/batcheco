@@ -8,7 +8,6 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -54,9 +53,6 @@ public class BatchConfiguration {
 	@Value("${job:mrtest}")
 	private String jobname;
 	
-	@Autowired
-	private ApplicationContext appContext;
-	
 	@Bean
 	public Job getSpecifiedJob() {
 		Job j;
@@ -79,7 +75,6 @@ public class BatchConfiguration {
 		RuntimeData data = new RuntimeData();
 		data.setPreProcSql("select count(*) from ameet.loco_offer1");
 		config.set("a123", data);
-		System.out.println("Running the test");
 		
 		return jobBuilders.get("Job:Pre-Processing sql hive execution job").incrementer(new RunIdIncrementer()).
 		flow(step20.build()).				

@@ -52,7 +52,7 @@ public class HiveSession {
 		try {
 			client = new HiveMetaStoreClient(hiveConf);
 		} catch (MetaException e) {
-			throw new LocoException(HiveCode1000.METASTORE_CLIENT_STARTUP_ERROR);
+			throw new LocoException(e, HiveCode1000.METASTORE_CLIENT_STARTUP_ERROR);
 		}
 		SessionState.start(new CliSessionState(hiveConf));
 	}
@@ -96,7 +96,7 @@ public class HiveSession {
 			driver.close();
 			client.close();
 		} catch (Exception e) {
-			throw new LocoException(HiveCode1000.HIVE_CLOSE_SESSION_ERROR);
+			throw new LocoException(e, HiveCode1000.HIVE_CLOSE_SESSION_ERROR);
 		}
 	}
 }

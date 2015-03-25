@@ -3,7 +3,10 @@ package com.att.datalake.loco.offercriteria;
 import java.util.HashMap;
 import java.util.Map;
 
-public class OfferIdToImplMap {
+public final class OfferIdToImplMap {
+	private OfferIdToImplMap() {
+		// TODO Auto-generated constructor stub
+	}
 
 	public static final Map<String, String> OFFER_BUILDER_MAP = new HashMap<String, String>() {
 		/**

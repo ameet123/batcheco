@@ -34,8 +34,11 @@ public class OfferParser {
 	 * this is the offer file name
 	 */
 	private String filename;
-
-	private CSVFormat offerFmt = CSVFormat.DEFAULT.withHeader("offerId", "criterionId", "criterionType",
+	/**
+	 * since we are repeating this
+	 */
+	private String offerId = "offerId";
+	private CSVFormat offerFmt = CSVFormat.DEFAULT.withHeader(offerId, "criterionId", "criterionType",
 			"criterionApplyObject", "criterionValues").withSkipHeaderRecord(true);
 
 	/**
@@ -54,7 +57,7 @@ public class OfferParser {
 		try {
 			offerRecords = offerFmt.parse(new FileReader(filename));
 		} catch (IOException e) {
-			throw new LocoException(OfferParserCode1100.OFFER_FILE_READ_ERROR);
+			throw new LocoException(e, OfferParserCode1100.OFFER_FILE_READ_ERROR);
 		}
 		// iterate over the records and start packing attributes into the Offer
 		// object
@@ -63,12 +66,12 @@ public class OfferParser {
 		Detail d;
 		for (CSVRecord record : offerRecords) {
 
-			OfferSpecification or = offerMap.get(record.get("offerId") );
+			OfferSpecification or = offerMap.get(record.get(offerId) );
 			if (or == null) {
-				LOGGER.debug("Adding new offer:{}", record.get("offerId"));
+				LOGGER.debug("Adding new offer:{}", record.get(offerId));
 				or = new OfferSpecification();
-				or.setOfferId(record.get("offerId"));
-				offerMap.put(record.get("offerId"), or);
+				or.setOfferId(record.get(offerId));
+				offerMap.put(record.get(offerId), or);
 				offers.add(or);
 			}
 
@@ -78,7 +81,7 @@ public class OfferParser {
 			try {
 				d.setCriterionId(Byte.parseByte(record.get("criterionId")));
 			} catch (NumberFormatException e) {
-				throw new LocoException(OfferParserCode1100.CRITERION_ID_NOT_A_NUMBER);
+				throw new LocoException(e, OfferParserCode1100.CRITERION_ID_NOT_A_NUMBER);
 			}
 			
 			criterionType = record.get("criterionType").charAt(0);

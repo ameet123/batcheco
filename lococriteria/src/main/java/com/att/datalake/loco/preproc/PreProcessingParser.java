@@ -48,7 +48,7 @@ public class PreProcessingParser {
 		try {
 			preProcRecords = preProcFmt.parse(new FileReader(preProcFile));
 		} catch (IOException e) {
-			throw new LocoException(OfferParserCode1100.PREPROC_FILE_READ_ERROR);
+			throw new LocoException(e, OfferParserCode1100.PREPROC_FILE_READ_ERROR);
 		}
 		// iterate over the records and start packing attributes into the Offer
 		// object
@@ -71,7 +71,7 @@ public class PreProcessingParser {
 			try {
 				d.setStep(Integer.parseInt(record.get("step")));
 			} catch (NumberFormatException e) {
-				throw new LocoException(OfferParserCode1100.PREPROC_STEP_NOT_NUMBER);
+				throw new LocoException(e, OfferParserCode1100.PREPROC_STEP_NOT_NUMBER);
 			}
 			d.setLeftTable(record.get("leftTable"));
 			d.setRightTable(record.get("rightTable"));

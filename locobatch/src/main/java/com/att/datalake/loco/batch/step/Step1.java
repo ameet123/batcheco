@@ -9,20 +9,20 @@ import com.att.datalake.loco.batch.task.CriteriaVerifierTasklet;
 @Component
 public class Step1 extends AbstractLocoStep {
 	
-	private final String STEP_NAME = "step-1:offer-criteria-verification";
-	private final String STEP_DESCR = "verify that the criteria sql is available in local and db configuration";
+	private final String stepName = "step-1:offer-criteria-verification";
+	private final String stepDescr = "verify that the criteria sql is available in local and db configuration";
 
 	@Autowired
 	private CriteriaVerifierTasklet tasklet1;
 
 	@Override
 	public String getDescrition() {
-		return STEP_DESCR;
+		return stepDescr;
 	}
 
 	@Override
 	public String getName() {
-		return STEP_NAME;
+		return stepName;
 	}
 
 	@Override

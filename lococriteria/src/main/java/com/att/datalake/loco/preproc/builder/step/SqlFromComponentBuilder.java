@@ -30,7 +30,7 @@ import com.att.datalake.loco.util.Utility;
 public class SqlFromComponentBuilder {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SqlFromComponentBuilder.class);
 	@Autowired
-	private SQLClauseBuilder sql;
+	private SQLClauseBuilder sqlBuilder;
 	@Autowired
 	private SQLStatementBuilder complete;
 
@@ -41,11 +41,11 @@ public class SqlFromComponentBuilder {
 		String select, from, where;
 		PreProcOutputData output = processorDTO.getOutput();
 		for (OutputDetailData o : output.getDetailData()) {
-			select = sql.select(o.getSelectMap(), null);
-			from = sql.from(o.getFromMap(), null);
+			select = sqlBuilder.select(o.getSelectMap(), null);
+			from = sqlBuilder.from(o.getFromMap(), null);
 			List<String> predicates = new ArrayList<String>();
-			predicates.add(sql.joinPredicate(o.getPredicateMap()));
-			where = sql.where(predicates, true);
+			predicates.add(sqlBuilder.joinPredicate(o.getPredicateMap()));
+			where = sqlBuilder.where(predicates, true);
 
 			complete.reset();
 			complete.doSelect(select);
@@ -68,7 +68,7 @@ public class SqlFromComponentBuilder {
 		}
 		if (sqls.size() > 0) {
 			LOGGER.debug("Generating sql from union of {} sqls", sqls.size());
-			finalSql = sql.unionAll(sqls);
+			finalSql = sqlBuilder.unionAll(sqls);
 		} else {
 			// assume that the join operation was self-sufficient
 			// and only one entry was there

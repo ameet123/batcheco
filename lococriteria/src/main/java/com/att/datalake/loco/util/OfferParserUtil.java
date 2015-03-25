@@ -1,6 +1,9 @@
 package com.att.datalake.loco.util;
 
-public class OfferParserUtil {
+public final class OfferParserUtil {
+	private OfferParserUtil() {
+		// TODO Auto-generated constructor stub
+	}
 	private static final String TRANSIENT_FILE_REGEX = "^FILE.*";
 	
 	/**

@@ -10,8 +10,8 @@ import com.att.datalake.loco.batch.task.PreProcessorParserTasklet;
 @Component
 public class Step11 extends AbstractLocoStep {
 	
-	private final String STEP_NAME = "step-11:preproc-file-processing";
-	private final String STEP_DESCR = "given a file, process it into a schema object";
+	private final String stepName = "step-11:preproc-file-processing";
+	private final String stepDescr = "given a file, process it into a schema object";
 
 	@Autowired
 	private PreProcessorParserTasklet tasklet11;
@@ -21,12 +21,12 @@ public class Step11 extends AbstractLocoStep {
 
 	@Override
 	public String getDescrition() {
-		return STEP_DESCR;
+		return stepDescr;
 	}
 
 	@Override
 	public String getName() {
-		return STEP_NAME;
+		return stepName;
 	}
 
 	@Override

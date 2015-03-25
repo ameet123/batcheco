@@ -7,7 +7,7 @@ import org.springframework.batch.repeat.RepeatStatus;
 public abstract class AbstractLocoTasklet implements CommonTasklet {
 	
 	@Override
-	public RepeatStatus execute(StepContribution contrib, ChunkContext context) throws Exception {
+	public RepeatStatus execute(StepContribution contrib, ChunkContext context) {
 		process();
 		return RepeatStatus.FINISHED;
 	}

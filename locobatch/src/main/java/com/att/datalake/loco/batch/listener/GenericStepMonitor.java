@@ -14,6 +14,7 @@ public class GenericStepMonitor implements StepExecutionListener {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GenericStepMonitor.class);
 	
 	private String marker;
+	private String doubleCarriage = "\n\n";
 	public GenericStepMonitor() {
 		marker = Utility.pad("", 80, '=');
 	}
@@ -24,23 +25,23 @@ public class GenericStepMonitor implements StepExecutionListener {
 		StringBuilder sb = new StringBuilder();
 		sb.append("\n");
 		sb.append(marker);
-		sb.append("\n\n");
+		sb.append(doubleCarriage);
 		sb.append("NAME:");
 		sb.append(stepName);	
-		sb.append("\n\n");
+		sb.append(doubleCarriage);
 		LOGGER.debug(sb.toString());
 	}
 
 	@Override
 	public ExitStatus afterStep(StepExecution exec) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("\n\n");
+		sb.append(doubleCarriage);
 		sb.append(exec.getStepName());
 		sb.append(" started:"+exec.getStartTime()+" status:"+exec.getStatus().name());
-		sb.append("\n\n");
+		sb.append(doubleCarriage);
 		sb.append(marker);
 		sb.append("\n");
-		System.out.println(sb.toString());
+		LOGGER.info(sb.toString());
 		return exec.getExitStatus();
 	}
 }

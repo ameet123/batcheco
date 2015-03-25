@@ -1,6 +1,9 @@
 package com.att.datalake.loco.util;
 
-public class OfferConstants {
+public final class OfferConstants {
+	private OfferConstants() {
+		// TODO Auto-generated constructor stub
+	}
 	public static final String OFFER_DB = "ameet";
 	public static final String OFFER_DAILY_TABLE = OFFER_DB + ".offer_daily";
 	public static final String OFFER_FINAL_TABLE = OFFER_DB + ".offer_daily";

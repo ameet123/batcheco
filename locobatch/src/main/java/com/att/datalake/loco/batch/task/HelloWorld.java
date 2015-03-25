@@ -8,7 +8,7 @@ import org.springframework.batch.repeat.RepeatStatus;
 public class HelloWorld implements Tasklet{
 
 	@Override
-	public RepeatStatus execute(StepContribution contrib, ChunkContext context) throws Exception {
+	public RepeatStatus execute(StepContribution contrib, ChunkContext context) {
 		System.out.println("**** HELLO World! ****");
 		System.out.println("START:"+context.getStepContext().getStepExecution().getStartTime());
 		return RepeatStatus.FINISHED;

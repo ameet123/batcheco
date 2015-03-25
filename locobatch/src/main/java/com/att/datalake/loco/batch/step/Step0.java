@@ -9,8 +9,8 @@ import com.att.datalake.loco.batch.task.CriteriaLoaderTasklet;
 @Component
 public class Step0 extends AbstractLocoStep {
 	
-	private final String STEP_NAME = "step-0:offer-criteria-loading";
-	private final String STEP_DESCR = "load the offer criteria file to the database, parse it, generate corresponding sql and persist it locally as well as in remote db for downstream processing and future reference";
+	private final String stepName = "step-0:offer-criteria-loading";
+	private final String stepDescr = "load the offer criteria file to the database, parse it, generate corresponding sql and persist it locally as well as in remote db for downstream processing and future reference";
 
 	@Autowired
 	private CriteriaLoaderTasklet tasklet0;
@@ -23,12 +23,12 @@ public class Step0 extends AbstractLocoStep {
 	}
 	@Override
 	public String getDescrition() {
-		return STEP_DESCR;
+		return stepDescr;
 	}
 
 	@Override
 	public String getName() {
-		return STEP_NAME;
+		return stepName;
 	}
 
 	@Override

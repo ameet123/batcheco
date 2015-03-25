@@ -15,8 +15,8 @@ import com.att.datalake.loco.batch.task.PreProcSqlgenTasklet;
 @Component
 public class Step13 extends AbstractLocoStep {
 
-	private final String STEP_NAME = "step-13:preproc-sql-generation";
-	private final String STEP_DESCR = "generate sql for each offer based on parsed syntax file and store it in a bean for downstream processing";
+	private final String stepName = "step-13:preproc-sql-generation";
+	private final String stepDescr = "generate sql for each offer based on parsed syntax file and store it in a bean for downstream processing";
 
 	@Autowired
 	private PreProcSqlgenTasklet tasklet13;
@@ -24,12 +24,12 @@ public class Step13 extends AbstractLocoStep {
 
 	@Override
 	public String getDescrition() {
-		return STEP_DESCR;
+		return stepDescr;
 	}
 
 	@Override
 	public String getName() {
-		return STEP_NAME;
+		return stepName;
 	}
 
 	@Override

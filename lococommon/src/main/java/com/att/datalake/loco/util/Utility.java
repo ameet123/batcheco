@@ -24,9 +24,12 @@ import org.slf4j.LoggerFactory;
 import com.att.datalake.loco.exception.FileCode1400;
 import com.att.datalake.loco.exception.LocoException;
 
-public class Utility {
+public final class Utility {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Utility.class);
 
+	private Utility() {
+		// nothing here
+	}
 	/**
 	 * concatenate source file to the target Files.asCharSink(new File(target),
 	 * Charset.defaultCharset(), FileWriteMode.APPEND).writeFrom( new
@@ -43,16 +46,12 @@ public class Utility {
 				FileUtils.write(new File(target), line + System.lineSeparator(), Charset.defaultCharset(), true);
 			}
 		} catch (IOException e) {
-			throw new LocoException(FileCode1400.CONCATENATED_FILE_CREATION_ERROR);
+			throw new LocoException(e, FileCode1400.CONCATENATED_FILE_CREATION_ERROR);
 		}
 	}
 
 	public static boolean mkdir(String dir) {
-		if (new File(dir).mkdirs()) {
-			return true;
-		} else {
-			return false;
-		}
+		return new File(dir).mkdirs();
 	}
 
 	/**

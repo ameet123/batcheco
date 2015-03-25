@@ -104,12 +104,12 @@ public class PreProcProcessorData {
 		for (Entry<String, Map<String, String>> e : selectMapByTable.entrySet()) {
 			MapUtils.debugPrint(System.out, e.getKey(), e.getValue());
 		}
-		System.out.println(underline);
+		LOGGER.debug(underline);
 		LOGGER.debug("Size of from Map:{}", fromMapByTable.size());
 		for (Entry<String, Map<String, String>> e : fromMapByTable.entrySet()) {
 			MapUtils.debugPrint(System.out, e.getKey(), e.getValue());
 		}
-		System.out.println(underline);
+		LOGGER.debug(underline);
 		LOGGER.debug("Size of from Map:{}", predicateMapByTable.size());
 		for (Entry<String, Map<String, String>> e : predicateMapByTable.entrySet()) {
 			MapUtils.debugPrint(System.out, e.getKey(), e.getValue());

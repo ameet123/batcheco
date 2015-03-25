@@ -8,7 +8,7 @@ import org.springframework.batch.repeat.RepeatStatus;
 public class Hello2 implements Tasklet{
 
 	@Override
-	public RepeatStatus execute(StepContribution arg0, ChunkContext arg1) throws Exception {
+	public RepeatStatus execute(StepContribution arg0, ChunkContext arg1) {
 		System.out.println("**** HELLO Again - 2 ! ****");
 		return RepeatStatus.FINISHED;
 	}

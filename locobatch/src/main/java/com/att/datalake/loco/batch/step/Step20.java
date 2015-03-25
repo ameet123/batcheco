@@ -15,8 +15,8 @@ import com.att.datalake.loco.batch.task.HiveProcessorTasklet;
 @Component
 public class Step20 extends AbstractLocoStep {
 
-	private final String STEP_NAME = "step-20:preproc-sql-hive-query-execution";
-	private final String STEP_DESCR = "run hive queries for all the offers based on preprocessing parsing done";
+	private final String stepName = "step-20:preproc-sql-hive-query-execution";
+	private final String stepDescr = "run hive queries for all the offers based on preprocessing parsing done";
 
 	@Autowired
 	private HiveProcessorTasklet tasklet20;
@@ -24,12 +24,12 @@ public class Step20 extends AbstractLocoStep {
 
 	@Override
 	public String getDescrition() {
-		return STEP_DESCR;
+		return stepDescr;
 	}
 
 	@Override
 	public String getName() {
-		return STEP_NAME;
+		return stepName;
 	}
 
 	@Override

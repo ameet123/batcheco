@@ -1,6 +1,5 @@
 package com.att.datalake.loco.sqlgenerator;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -15,8 +14,7 @@ import com.att.datalake.loco.exception.SqlBuilderCode1200;
  */
 @Component
 public class SQLStatementBuilder {
-	@Autowired
-	private SQLClauseBuilder sql;
+
 	private StringBuilder sb;
 	private String select;
 	private String from;
@@ -83,7 +81,6 @@ public class SQLStatementBuilder {
 	 * @return 
 	 */
 	private boolean isAggregate() {
-//		if (select.matches(".*SUM.*|.*MAX.*|.*MIN.*|.*COUNT.*|.*AVG.*")) {
 		if (select.matches(".*(?:SUM|MAX|MIN|COUNT|AVG)\\s*\\(.*")) {
 			// ensure that group by is done
 			if (StringUtils.isEmpty(group)) {
