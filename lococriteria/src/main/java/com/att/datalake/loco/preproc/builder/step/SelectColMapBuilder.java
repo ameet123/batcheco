@@ -26,7 +26,9 @@ public class SelectColMapBuilder {
 	 * removing duplicates. We first get the left columns. Assumption is that
 	 * left table is a superset or more closer to final look we also have to
 	 * account for function such as MOD(BAN,1000)
-	 * 
+	 * The build() method actually modifies the current step select MAP
+	 * so that when accessed from preocessorDTO object, it already has the data
+	 * that's why no need to capture the return value as such.
 	 * @param d
 	 * @param selectMap
 	 * @param rightColumns

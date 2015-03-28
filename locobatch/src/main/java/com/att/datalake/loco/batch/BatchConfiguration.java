@@ -48,15 +48,21 @@ public class BatchConfiguration {
 	private Step13 step13;
 	@Autowired
 	private Step20 step20;
+	
 	@Value("${offer.file:input/offer.csv}")
 	private String filename;
 	@Value("${job:mrtest}")
 	private String jobname;
-	
+	/**
+	 * load a job based on VM parameter -Djob or the default
+	 * @return
+	 */
 	@Bean
 	public Job getSpecifiedJob() {
 		Job j;
 		switch (jobname) {
+		case "complete":
+			j = completeLoco();
 		case "preprocessing":
 			j = preProcessingJob();
 		case "criteria":
@@ -66,6 +72,24 @@ public class BatchConfiguration {
 		}
 		LOGGER.info("Launching {} job", jobname);
 		return j;
+	}
+	/**
+	 * complete loco processing
+	 * @return
+	 */
+	public Job completeLoco() {
+		return jobBuilders.get("Job:Loco Processing").incrementer(new RunIdIncrementer()).
+		// offer criteria load, process
+		flow(step0.setFilename(filename).build()).
+		next(step1.build()).
+		next(step11.build()).
+		// pre processing
+		next(step12.build()).
+		next(step13.build()).
+		// Hive preprocessor logic
+		next(step20.build()).
+		end().
+		build();
 	}
 	/**
 	 * this is primarily to test hadoop connectivity

@@ -1,6 +1,7 @@
 package com.att.datalake.loco.preproc.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,11 @@ public class PreProcProcessorData {
 	 */
 	private List<String> unionList;
 	/**
+	 * map os tables with an "insert" relationship
+	 * i.e. insert into <TABLE-A> select * from <TABLE-B>
+	 */
+	private Map<String, String> insertMap;
+	/**
 	 * value of the output from the previous step;
 	 */
 	private String prevOutput;
@@ -63,6 +69,7 @@ public class PreProcProcessorData {
 		fromMapByTable = new LinkedHashMap<String, Map<String, String>>();
 		predicateMapByTable = new LinkedHashMap<String, Map<String, String>>();
 		unionList = new ArrayList<String>();
+		insertMap = new HashMap<String, String>();
 		tabularData = new PreProcTabularData();
 	}
 
@@ -131,7 +138,10 @@ public class PreProcProcessorData {
 		predicateMapByTable.put(output, predicateMapByTable.get(prevOutput));
 		predicateMapByTable.remove(prevOutput);
 	}
-
+	/**
+	 * just moves the counter to next step detail. This is so that we can 
+	 * have a reference to previous step, the essential details of it.
+	 */
 	public void setStepCompletion() {
 		prevOutput = currentDetail.getOutput();
 		prevOp = currentDetail.getOp();
@@ -142,10 +152,19 @@ public class PreProcProcessorData {
 		unionList.add(currentDetail.getLeftTable());
 		unionList.add(currentDetail.getRightTable());
 	}
+	/**
+	 * process insert operation by storing the left and right into insert map
+	 */
+	public void processInsert() {
+		insertMap.put(getCurrentDetail().getLeftTable(), getCurrentDetail().getRightTable());
+	}
 
 	/**
 	 * prepare and return the output for consumption
-	 * 
+	 * iterate over one of the 3 maps - select, from , predicate
+	 * and for each key, we get the corresponding values and pack 
+	 * them in the output. Thus we have all the necessary maps
+	 * packed into the output so that SQL can be built.
 	 * @return
 	 */
 	public PreProcOutputData getOutput() {
@@ -208,5 +227,9 @@ public class PreProcProcessorData {
 
 	public void setPrevOp(char prevOp) {
 		this.prevOp = prevOp;
+	}
+
+	public Map<String, String> getInsertMap() {
+		return insertMap;
 	}
 }

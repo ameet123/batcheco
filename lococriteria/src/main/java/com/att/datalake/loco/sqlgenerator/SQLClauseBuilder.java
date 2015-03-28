@@ -215,6 +215,27 @@ public class SQLClauseBuilder {
 		sb.setLength(sb.length() - UNION_SUBTRACTOR);
 		return sb.toString();
 	}
+	/**
+	 * insert  [overwrite] into table select...
+	 * @param table
+	 * @param query
+	 * @param isOverwrite
+	 * @return
+	 */
+	public String insertInto(String table, String query, boolean isOverwrite) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("INSERT ");
+		if (isOverwrite) {
+			sb.append("OVERWRITE ");			
+		} else {
+			sb.append("INTO ");
+		}
+		sb.append("TABLE ");
+		sb.append(table);
+		sb.append(" ");
+		sb.append(query);
+		return sb.toString();
+	}
 
 	/**
 	 * check whether the passsed table has inline set to true

@@ -20,6 +20,7 @@ import com.att.datalake.loco.util.Utility;
 
 /**
  * Generate SQL from {@link PreProcSpec}
+ * generate sql for all offers
  * 
  * @author ac2211
  *

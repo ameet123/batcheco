@@ -34,12 +34,30 @@ public class SqlFromComponentBuilder {
 	@Autowired
 	private SQLStatementBuilder complete;
 
+	/**
+	 * we are assuming that the sequence of operations is: 1. individual SQL
+	 * involving joins across multiple tables 2. Union of SQLs generated from
+	 * step 1 3. insertion into a table from step 1 or 2. ( 2 is optional)
+	 * 
+	 * @param processorDTO
+	 * @return
+	 */
 	public String build(PreProcProcessorData processorDTO) {
 		String finalSql = null;
 		// to store generated sql to be used in union
 		Map<String, String> tableSqlMap = new HashMap<String, String>();
-		String select, from, where;
 		PreProcOutputData output = processorDTO.getOutput();
+		// perform join
+		buildJoin(output, tableSqlMap);
+		// perform Union
+		finalSql = buildUnion(output, tableSqlMap);
+		// perform insert
+		finalSql = buildInsert(processorDTO, finalSql);
+		return finalSql;
+	}
+
+	private void buildJoin(PreProcOutputData output, Map<String, String> tableSqlMap) {
+		String select, from, where;
 		for (OutputDetailData o : output.getDetailData()) {
 			select = sqlBuilder.select(o.getSelectMap(), null);
 			from = sqlBuilder.from(o.getFromMap(), null);
@@ -55,7 +73,31 @@ public class SqlFromComponentBuilder {
 			tableSqlMap.put(o.getTableKey(), sql);
 			LOGGER.trace("{} SQL:\n{}", o.getTableKey(), Utility.prettyPrint(sql));
 		}
+	}
 
+	/**
+	 * build insert into with validations
+	 * 
+	 * @param processorDTO
+	 * @param sql
+	 * @return
+	 */
+	private String buildInsert(PreProcProcessorData processorDTO, String sql) {
+		Map<String, String> insertMap = processorDTO.getInsertMap();
+		if (insertMap.size() == 0) {
+			return sql;
+		}
+		// there should be only one entry here
+		if (insertMap.size() > 1) {
+			throw new LocoException(OfferParserCode1100.PREPROC_MULTIPLE_INSERT_INTO_INVALID);
+		}
+		String insertTable = insertMap.keySet().iterator().next();
+		LOGGER.debug("Formulating final insert into clause for table:{}", insertTable);
+		return sqlBuilder.insertInto(insertTable, sql, true);
+	}
+
+	private String buildUnion(PreProcOutputData output, Map<String, String> tableSqlMap) {
+		String finalSql;
 		// now generate comprehensive sql involving union if needed
 		List<String> sqls = new ArrayList<String>();
 		for (String t : output.getUnionItems()) {

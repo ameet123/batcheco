@@ -66,6 +66,8 @@ public class StepsProcessingController {
 				processJoinStep(processorDTO);
 			} else if (d.getOp() == PreProcOperation.UNION.getValue()) {
 				processUnionStep(processorDTO);
+			} else if (d.getOp() == PreProcOperation.INSERT.getValue()) {
+				processorDTO.processInsert();
 			}
 			processorDTO.setStepCompletion();
 		}
