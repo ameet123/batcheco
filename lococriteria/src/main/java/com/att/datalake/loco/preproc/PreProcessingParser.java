@@ -12,7 +12,6 @@ import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import com.att.datalake.loco.exception.LocoException;
 import com.att.datalake.loco.exception.OfferParserCode1100;
@@ -45,13 +44,11 @@ public class PreProcessingParser {
 	 */
 	public List<PreProcSpec> parse() {
 		List<PreProcSpec> preSpecList = new ArrayList<PreProcSpec>();
-		// so that we can do a contains ? query in O(1) as opposed to O(n)
-		// ->List
+		// so that we can do a contains ? query in O(1) as opposed to O(n) ->List
 		Map<String, PreProcSpec> preProcMap = new HashMap<String, PreProcSpec>();
 
 		Iterable<CSVRecord> preProcRecords = recordIterator();
-		// iterate over the records and start packing attributes into the Offer
-		// object
+		// iterate over the records and start packing attributes into the Offer object
 		List<ProcDetail> details;
 		ProcDetail d;
 		for (CSVRecord record : preProcRecords) {
@@ -59,7 +56,6 @@ public class PreProcessingParser {
 			doValidations(record);
 
 			PreProcSpec pr = buildNewSpecRecord(record.get(offerId), preProcMap, preSpecList);
-
 			// set details
 			details = pr.getProcDetail();
 			d = new PreProcSpec.ProcDetail();
@@ -101,9 +97,7 @@ public class PreProcessingParser {
 	 * @return
 	 */
 	private Iterable<CSVRecord> recordIterator() {
-		if (StringUtils.isEmpty(preProcFile)) {
-			throw new LocoException(OfferParserCode1100.NO_PREPROC_FILE_SET);
-		}
+		
 		Iterable<CSVRecord> preProcRecords;
 		try {
 			preProcRecords = preProcFmt.parse(new FileReader(preProcFile));

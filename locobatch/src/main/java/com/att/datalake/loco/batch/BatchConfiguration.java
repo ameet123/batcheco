@@ -63,10 +63,13 @@ public class BatchConfiguration {
 		switch (jobname) {
 		case "complete":
 			j = completeLoco();
+			break;
 		case "preprocessing":
 			j = preProcessingJob();
+			break;
 		case "criteria":
 			j = offerCriteriaJob();
+			break;
 		default:
 			j = getMrTestingJob();
 		}

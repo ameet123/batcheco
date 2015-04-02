@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -42,7 +43,7 @@ public class CriteriaVerifierTasklet extends AbstractLocoTasklet {
 	}
 
 	@Override
-	public void process() {
+	public void process(ChunkContext context) {
 		RuntimeData data;
 		String criteriaSql;
 		// first check local data

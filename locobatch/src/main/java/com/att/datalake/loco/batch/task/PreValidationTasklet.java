@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -45,7 +46,7 @@ public class PreValidationTasklet extends AbstractLocoTasklet {
 	 * turn validating them
 	 */
 	@Override
-	public void process() {
+	public void process(ChunkContext context) {
 		for (String offer : config.offerIterator()) {
 			// get runtimedata
 			RuntimeData d = config.get(offer);

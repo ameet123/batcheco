@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,7 +42,7 @@ public class PreProcessorParserTasklet extends AbstractLocoTasklet {
 	}
 
 	@Override
-	public void process() {
+	public void process(ChunkContext context) {
 		List<PreProcSpec> specs = pr.parse();
 		for (PreProcSpec p : specs) {
 			LOGGER.debug(gson.toJson(p));

@@ -1,5 +1,7 @@
 package com.att.datalake.loco.mrprocessor.hive;
 
+import java.util.List;
+
 import javax.annotation.PreDestroy;
 
 import org.apache.hadoop.hive.cli.CliSessionState;
@@ -7,6 +9,7 @@ import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.HiveMetaStoreClient;
 import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.ql.Driver;
+import org.apache.hadoop.hive.ql.MapRedStats;
 import org.apache.hadoop.hive.ql.session.SessionState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +44,8 @@ public class HiveSession {
 
 	@Value("${mr.output.silent:false}")
 	private boolean mrSilent;
+	
+	private SessionState state;
 
 	private HiveConf hiveConf = null;
 	private Driver driver = null;
@@ -54,7 +59,10 @@ public class HiveSession {
 		} catch (MetaException e) {
 			throw new LocoException(e, HiveCode1000.METASTORE_CLIENT_STARTUP_ERROR);
 		}
-		SessionState.start(new CliSessionState(hiveConf));
+		state = SessionState.start(new CliSessionState(hiveConf));
+	}
+	public List<MapRedStats> getStats() {
+		return state.getLastMapRedStatsList();
 	}
 
 	/**
@@ -69,6 +77,7 @@ public class HiveSession {
 		if (mrSilent) {
 			hiveConf.setBoolVar(HiveConf.ConfVars.HIVESESSIONSILENT, true);
 		}
+
 	}
 
 	/**

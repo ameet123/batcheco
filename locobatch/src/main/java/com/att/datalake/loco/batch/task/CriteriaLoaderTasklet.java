@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -22,6 +23,7 @@ import com.att.datalake.loco.offerconfiguration.repository.OfferDAO;
 import com.att.datalake.loco.offercriteria.OfferParser;
 import com.att.datalake.loco.offercriteria.RuntimeSyntaxBuilder;
 import com.att.datalake.loco.offercriteria.model.OfferSpecification;
+import com.att.datalake.loco.util.Utility;
 import com.google.gson.Gson;
 
 /**
@@ -64,7 +66,7 @@ public class CriteriaLoaderTasklet extends AbstractLocoTasklet {
 		this.filename = file;
 	}
 	@Override
-	public void process() {
+	public void process(ChunkContext context) {
 		List<OfferSpecification> criteria;
 		if (StringUtils.isEmpty(filename)) {
 			LOGGER.debug("No offer criteria file passed, trying to load from database now.");
@@ -83,6 +85,12 @@ public class CriteriaLoaderTasklet extends AbstractLocoTasklet {
 		Map<String, String> offerSqlMap = rb.build(criteria);
 		if (offerSqlMap == null || offerSqlMap.size() != criteria.size()) {
 			throw new LocoException(OfferSqlConversionCode1300.OFFER_CRITERIA_SQL_GEN_ERROR);
+		}
+		// debug
+		if (LOGGER.isDebugEnabled()) {
+			for (Entry<String, String> e: offerSqlMap.entrySet()) {
+				LOGGER.debug(e.getKey()+"=>"+Utility.prettyPrint(e.getValue()));
+			}
 		}
 		saveSql(offerSqlMap);
 	}

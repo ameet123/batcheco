@@ -8,10 +8,10 @@ public abstract class AbstractLocoTasklet implements CommonTasklet {
 	
 	@Override
 	public RepeatStatus execute(StepContribution contrib, ChunkContext context) {
-		process();
+		process(context);
 		return RepeatStatus.FINISHED;
 	}
 
 	public abstract String getName();
-	public abstract void process();
+	public abstract void process(ChunkContext context);
 }

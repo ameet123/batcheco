@@ -55,6 +55,7 @@ public class SQLClauseBuilder {
 	public String joinPredicate(Map<String, String> joinMap) {
 		StringBuilder sb = new StringBuilder();
 		for (Entry<String, String> e : joinMap.entrySet()) {
+			System.out.println("predicate key=>"+e.getKey()+" val=>"+e.getValue());
 			sb.append(e.getKey());
 			sb.append(" = ");
 			sb.append(e.getValue());

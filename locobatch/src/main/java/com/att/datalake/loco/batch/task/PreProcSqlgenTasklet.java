@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -17,6 +18,7 @@ import com.att.datalake.loco.offerconfiguration.model.Offer;
 import com.att.datalake.loco.offerconfiguration.repository.OfferDAO;
 import com.att.datalake.loco.preproc.builder.AllPreProcSqlBuilder;
 import com.att.datalake.loco.preproc.model.PreProcSpec;
+import com.att.datalake.loco.util.Utility;
 
 /**
  * generate sql from {@link PreProcSpec} generate list of {@link PreProcSpec}
@@ -44,7 +46,7 @@ public class PreProcSqlgenTasklet extends AbstractLocoTasklet {
 	}
 
 	@Override
-	public void process() {
+	public void process(ChunkContext context) {
 		// generate a list of PreProcSpc to pass to the builder
 		List<PreProcSpec> specs = new ArrayList<PreProcSpec>();
 		RuntimeData data;
@@ -66,6 +68,9 @@ public class PreProcSqlgenTasklet extends AbstractLocoTasklet {
 			offerId = e.getKey();
 			preProcSql = e.getValue();
 			data = config.get(offerId);
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("preProcSQL=>"+Utility.prettyPrint(preProcSql));
+			}
 			// pack the sql in runtime data
 			data.setPreProcSql(preProcSql);
 			updateDb(offerId, preProcSql);
