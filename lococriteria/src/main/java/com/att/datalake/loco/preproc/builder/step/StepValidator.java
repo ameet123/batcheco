@@ -23,7 +23,7 @@ public class StepValidator {
 	 * @param processorDTO
 	 */
 	public void validate(PreProcProcessorData processorDTO) {
-		LOGGER.debug("Validating step:{}", processorDTO.getCurrentDetail().getStep());
+		LOGGER.trace("Validating step:{}", processorDTO.getCurrentDetail().getStep());
 		if ((processorDTO.getPrevStep() + 1) != processorDTO.getCurrentDetail().getStep()) {
 			throw new LocoException(OfferParserCode1100.PREPROC_STEPS_NOT_IN_ORDER);
 		}
@@ -31,7 +31,7 @@ public class StepValidator {
 				|| !OfferParserUtil.isTransient(processorDTO.getCurrentDetail().getLeftTable())) {
 			return;
 		}
-		LOGGER.debug("Checking output:{} current left:{}", processorDTO.getPrevOutput(), processorDTO
+		LOGGER.trace("Checking output:{} current left:{}", processorDTO.getPrevOutput(), processorDTO
 				.getCurrentDetail().getLeftTable());
 		if (!processorDTO.getPrevOutput().equals(processorDTO.getCurrentDetail().getLeftTable())) {
 			throw new LocoException(OfferParserCode1100.PREPROC_IN_OUT_NOT_SEQUENTIAL);

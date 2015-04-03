@@ -48,7 +48,6 @@ public class SelectColMapBuilder {
 		// do right, the key being, if we find the column already in map, skip
 		for (String c : tabularData.getRightColumns()) {
 			if (c.contains(" ")) {
-				LOGGER.debug("checking alias of right col:{}", c.split("\\s+")[1]);
 				if (processorDTO.getCurrentSelectMap().containsKey(c.split("\\s+")[1])) {
 					continue;
 				}
@@ -75,14 +74,14 @@ public class SelectColMapBuilder {
 		String processedCol;
 		boolean nullAlias = false;
 		if (col.contains("(")) {
-			LOGGER.debug("Checking col:{} contains open paren", col);
+			LOGGER.trace("Checking col:{} contains open paren", col);
 			Matcher m = functionPattern.matcher(col);
 			if (m.find()) {
-				LOGGER.debug("Processing col:{}, match found for ) ", col);
+				LOGGER.trace("Processing col:{}, match found for ) ", col);
 				StringBuilder sb = new StringBuilder();
 				sb.append(m.group(1)).append("(").append(alias).append(".").append(m.group(2)).append(m.group(3))
 						.append(")").append(m.group(4));
-				LOGGER.debug("function column processed:{}", sb.toString());
+				LOGGER.trace("function column processed:{}", sb.toString());
 				processedCol = sb.toString();
 				nullAlias = true;
 			} else {

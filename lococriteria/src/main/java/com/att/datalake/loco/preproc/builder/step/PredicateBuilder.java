@@ -37,7 +37,7 @@ public class PredicateBuilder {
 	 */
 	public void build(PreProcProcessorData processorDTO) {
 		PreProcTabularData tabularData = processorDTO.getTabularData();
-		LOGGER.debug("incoming for output:{} size:{}", processorDTO.getCurrentDetail().getOutput(), processorDTO
+		LOGGER.trace("incoming for output:{} size:{}", processorDTO.getCurrentDetail().getOutput(), processorDTO
 				.getCurrentPredicateMap().size());
 		// don't do anything if union operation
 		if (processorDTO.getCurrentDetail().getOp() == PreProcOperation.UNION.getValue()) {
@@ -51,7 +51,7 @@ public class PredicateBuilder {
 				.getOpColumn(), tabularData.getStepAliasMap());
 
 		processorDTO.getCurrentPredicateMap().put(rightSide, leftSide);
-		LOGGER.debug("Output:{} left:{} right:{} outoigng size:{}", processorDTO.getCurrentDetail().getOutput(),
+		LOGGER.trace("Output:{} left:{} right:{} outoigng size:{}", processorDTO.getCurrentDetail().getOutput(),
 				leftSide, rightSide, processorDTO.getCurrentPredicateMap().size());
 	}
 
@@ -78,7 +78,7 @@ public class PredicateBuilder {
 
 				// for situation c = "SOR_INVARIANT_ID BAN" and opcol = BAN
 				if (c.contains(opColumn)) {
-					LOGGER.debug("Ok mostly alias, column:{} contains opCol:{}", c, opColumn);
+					LOGGER.trace("Ok mostly alias, column:{} contains opCol:{}", c, opColumn);
 					if (c.split("\\s+")[1].equals(opColumn)) {
 						joinCol = c.split("\\s+")[0];
 						break;

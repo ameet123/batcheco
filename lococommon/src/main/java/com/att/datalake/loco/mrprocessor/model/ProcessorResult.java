@@ -13,6 +13,10 @@ public class ProcessorResult {
 	private List<String> results;
 	private boolean querySuccess;
 	private int recordCount;
+	private int numRows;
+	private int numFiles;
+	private String table;
+	
 	/**
 	 * @return the responseCode
 	 */
@@ -61,6 +65,24 @@ public class ProcessorResult {
 	 */
 	public void setQuerySuccess(boolean querySuccess) {
 		this.querySuccess = querySuccess;
+	}
+	public int getNumRows() {
+		return numRows;
+	}
+	public void setNumRows(int numRows) {
+		this.numRows = numRows;
+	}
+	public int getNumFiles() {
+		return numFiles;
+	}
+	public void setNumFiles(int numFiles) {
+		this.numFiles = numFiles;
+	}
+	public String getTable() {
+		return table;
+	}
+	public void setTable(String table) {
+		this.table = table;
 	}
 
 }

@@ -92,7 +92,7 @@ public class SqlFromComponentBuilder {
 			throw new LocoException(OfferParserCode1100.PREPROC_MULTIPLE_INSERT_INTO_INVALID);
 		}
 		String insertTable = insertMap.keySet().iterator().next();
-		LOGGER.debug("Formulating final insert into clause for table:{}", insertTable);
+		LOGGER.trace("Formulating final insert into clause for table:{}", insertTable);
 		return sqlBuilder.insertInto(insertTable, sql, true);
 	}
 
@@ -101,7 +101,6 @@ public class SqlFromComponentBuilder {
 		// now generate comprehensive sql involving union if needed
 		List<String> sqls = new ArrayList<String>();
 		for (String t : output.getUnionItems()) {
-			LOGGER.debug("Adding to Union:{}", t);
 			String sql = tableSqlMap.get(t);
 			if (StringUtils.isEmpty(sql)) {
 				throw new LocoException(OfferParserCode1100.PREPROC_JOIN_TO_UNION_MISMATCH);
@@ -109,12 +108,12 @@ public class SqlFromComponentBuilder {
 			sqls.add(sql);
 		}
 		if (sqls.size() > 0) {
-			LOGGER.debug("Generating sql from union of {} sqls", sqls.size());
+			LOGGER.trace("Generating sql from union of {} sqls", sqls.size());
 			finalSql = sqlBuilder.unionAll(sqls);
 		} else {
 			// assume that the join operation was self-sufficient
 			// and only one entry was there
-			LOGGER.debug("Generating sql from just join operations of size:{}", tableSqlMap.size());
+			LOGGER.trace("Generating sql from just join operations of size:{}", tableSqlMap.size());
 			if (tableSqlMap.size() != 1) {
 				throw new LocoException(OfferParserCode1100.PREPROC_OPERATIONS_NOT_COMPLETE);
 			}

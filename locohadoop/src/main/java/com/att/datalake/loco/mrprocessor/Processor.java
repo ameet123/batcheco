@@ -24,4 +24,12 @@ public interface Processor {
 	 * @param table
 	 */
 	void setDbTable(String db, String table);
+	/**
+	 * to capture the output from processing, 
+	 * 
+	 * @param file
+	 */
+	default void setOutput(String file) {
+		// need to override if query output redirection required.
+	}
 }

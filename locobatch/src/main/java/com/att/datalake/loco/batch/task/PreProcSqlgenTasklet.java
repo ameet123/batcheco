@@ -54,7 +54,7 @@ public class PreProcSqlgenTasklet extends AbstractLocoTasklet {
 			data = config.get(offer);
 
 			if (data.getOfferSpec() != null) {
-				LOGGER.debug("Tasklet {}: adding offer {} to sqlgen", this.getClass().getSimpleName(), offer);
+				LOGGER.trace("Tasklet {}: adding offer {} to sqlgen", this.getClass().getSimpleName(), offer);
 				specs.add(data.getOfferSpec());
 			}
 		}

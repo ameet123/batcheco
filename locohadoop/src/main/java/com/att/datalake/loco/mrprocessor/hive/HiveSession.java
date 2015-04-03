@@ -77,7 +77,6 @@ public class HiveSession {
 		if (mrSilent) {
 			hiveConf.setBoolVar(HiveConf.ConfVars.HIVESESSIONSILENT, true);
 		}
-
 	}
 
 	/**

@@ -130,7 +130,7 @@ public class PreProcProcessorData {
 	}
 
 	public void updateMapEntries(String output) {
-		LOGGER.debug("Removing select,from maps key:{} and adding that entry to new key:{}", prevOutput, output);
+		LOGGER.trace("Removing select,from maps key:{} and adding that entry to new key:{}", prevOutput, output);
 		selectMapByTable.put(output, selectMapByTable.get(prevOutput));
 		selectMapByTable.remove(prevOutput);
 		fromMapByTable.put(output, fromMapByTable.get(prevOutput));

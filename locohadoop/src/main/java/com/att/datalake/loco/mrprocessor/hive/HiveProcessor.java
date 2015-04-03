@@ -18,11 +18,9 @@ import com.att.datalake.loco.exception.LocoException;
 import com.att.datalake.loco.mrprocessor.Processor;
 import com.att.datalake.loco.mrprocessor.model.ProcessorResult;
 import com.att.datalake.loco.mrprocessor.utility.StringLoggerStream;
-import com.att.datalake.loco.util.Utility;
 
 /**
  * provide the mechanism to run hive queries and get hive SQL metadata
- * 
  * 
  * @author ac2211
  *
@@ -46,7 +44,8 @@ public class HiveProcessor implements Processor {
 	 * run Hive SQL Query and capture results in a List<String> for later
 	 * retrieval we try to catch exceptions and do the markcomplete before
 	 * rethrowing them so that the service is freed for the next run.
-	 * 
+	 * We need to redirect stderr to capture the hive query logs, so this
+	 * method becomes a wrapper
 	 * @param command
 	 * @return
 	 * @throws CommandNeedRetryException
@@ -66,29 +65,31 @@ public class HiveProcessor implements Processor {
 		System.setErr(slErr.getUnderlying());
 
 		// DEBUG, show what was captured
-		printStats(slErr.getCaptured().toString());
+		packStats(slErr.getCaptured().toString(), pr);
 		return pr;
 	}
 
-	public void setOutputFile(String file) {
+	public void setOutput(String file) {
 		this.outputFile = file;
 	}
 	
-	private void printStats(String output) {
+	private void packStats(String output, ProcessorResult pr) {
 		// capture this : Table db.pqe stats: [numFiles=1, numRows=2,
 		// totalSize=1725, rawDataSize=2703]
 		Pattern p = Pattern.compile("Table (.*) stats:.*numFiles=([0-9]*), numRows=([0-9]*)");
 		Matcher m = p.matcher(output);
-		String rows, files, table;
+		String table = null;
+		int rows = 0, files = 0;
 		if (m.find()) {
 			table = m.group(1);
-			files = m.group(2);
-			rows = m.group(3);
-			String hdr = Utility.pad("*", 79, '*');
-			LOGGER.info("\n{}\nTable:{} rows processed:{} files:{}\n{}", hdr, table, rows, files, hdr);
+			files = Integer.parseInt(m.group(2));
+			rows = Integer.parseInt(m.group(3));			
 		} else {
 			LOGGER.error("row and file stats not found in stdout");
 		}
+		pr.setNumFiles(files);
+		pr.setNumRows(rows);
+		pr.setTable(table);
 	}
 
 	private ProcessorResult runInternal(List<String> command, boolean wantResults) {
