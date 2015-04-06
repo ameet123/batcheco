@@ -25,10 +25,11 @@ public class SelectColMapBuilder {
 	 * given two sets of columns, generate a unique map with appropriate alias
 	 * removing duplicates. We first get the left columns. Assumption is that
 	 * left table is a superset or more closer to final look we also have to
-	 * account for function such as MOD(BAN,1000)
-	 * The build() method actually modifies the current step select MAP
-	 * so that when accessed from preocessorDTO object, it already has the data
-	 * that's why no need to capture the return value as such.
+	 * account for function such as MOD(BAN,1000) The build() method actually
+	 * modifies the current step select MAP so that when accessed from
+	 * preocessorDTO object, it already has the data that's why no need to
+	 * capture the return value as such.
+	 * 
 	 * @param d
 	 * @param selectMap
 	 * @param rightColumns
@@ -42,7 +43,7 @@ public class SelectColMapBuilder {
 		// process left if needed
 		if (tabularData.getLeftColumns() != null) {
 			for (String c : tabularData.getLeftColumns()) {
-				processColumnAndAdd(c, tabularData.getLeftAlias(), processorDTO.getCurrentSelectMap());
+				processColumnAndAdd(c, tabularData.getLeftAlias(), processorDTO.getCurrentSelectMap(), true);
 			}
 		}
 		// do right, the key being, if we find the column already in map, skip
@@ -56,7 +57,7 @@ public class SelectColMapBuilder {
 					continue;
 				}
 			}
-			processColumnAndAdd(c, tabularData.getRightAlias(), processorDTO.getCurrentSelectMap());
+			processColumnAndAdd(c, tabularData.getRightAlias(), processorDTO.getCurrentSelectMap(), true);
 		}
 		return processorDTO.getCurrentSelectMap();
 	}
@@ -65,12 +66,13 @@ public class SelectColMapBuilder {
 	 * sometimes the column may contain a function MOD(BAN,1000) in this case,
 	 * we want to add the alias to the column right here and then tell the
 	 * sqlbuilder to not add any alias by passing null
-	 * 
+	 * at the moment, we are adding true by default...
 	 * @param col
 	 * @param alias
+	 * @param is cast to int needed , for e.g. for PMOD
 	 * @return
 	 */
-	private void processColumnAndAdd(String col, String alias, Map<String, String> map) {
+	private void processColumnAndAdd(String col, String alias, Map<String, String> map, boolean isBigIntCastNeeded) {
 		String processedCol;
 		boolean nullAlias = false;
 		if (col.contains("(")) {
@@ -79,8 +81,13 @@ public class SelectColMapBuilder {
 			if (m.find()) {
 				LOGGER.trace("Processing col:{}, match found for ) ", col);
 				StringBuilder sb = new StringBuilder();
-				sb.append(m.group(1)).append("(").append(alias).append(".").append(m.group(2)).append(m.group(3))
-						.append(")").append(m.group(4));
+				sb.append(m.group(1)).append("(");
+				if (isBigIntCastNeeded) {
+					sb.append(bigIntCast(alias+"."+m.group(2)));
+				} else {
+					sb.append(alias).append(".").append(m.group(2));
+				}
+				sb.append(m.group(3)).append(")").append(m.group(4));
 				LOGGER.trace("function column processed:{}", sb.toString());
 				processedCol = sb.toString();
 				nullAlias = true;
@@ -91,5 +98,13 @@ public class SelectColMapBuilder {
 			processedCol = col;
 		}
 		map.put(processedCol, (nullAlias) ? null : alias);
+	}
+
+	private String bigIntCast(String col) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("CAST(");
+		sb.append(col);
+		sb.append(" AS bigint)");
+		return sb.toString();
 	}
 }

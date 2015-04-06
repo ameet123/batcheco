@@ -51,7 +51,7 @@ public class ProeProcSqlTest extends AbstractTestNGSpringContextTests {
 
 	@BeforeClass
 	public void init() {
-		pr.setPreProcFile("input/preproc.csv");
+		pr.setPreProcFile("input/preproc1.csv");
 		preProcList = pr.parse();
 	}
 
