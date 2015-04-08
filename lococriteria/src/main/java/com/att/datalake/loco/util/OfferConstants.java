@@ -13,5 +13,9 @@ public final class OfferConstants {
 	public static final String OFFER1_ADJUSTMENT_TABLE = OFFER_DB + ".loco_adjustment";
 	public static final String OFFER1_MERGED_TABLE = OFFER_DB + ".loco_offer1";
 	
+	// Criteria
+	public static final String OFFER_CRITERIA_ID = "LOCO";
+	public static final String CRIT_LOCAL_EXTRACT_DIR = "/user/ac2211/loco_extract";
+	
 
 }

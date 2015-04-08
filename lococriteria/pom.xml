@@ -8,7 +8,7 @@
 	</parent>
 	<groupId>com.att.datalake.locoparent</groupId>
 	<artifactId>lococriteria</artifactId>
-	<name>locodatastore</name>
+	<name>lococriteria</name>
 
 	<dependencies>
 		<dependency>
@@ -44,5 +44,6 @@
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 		</dependency>
+
 	</dependencies>
 </project>

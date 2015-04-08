@@ -1,8 +1,6 @@
 package com.att.datalake.loco.sqlgenerator;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -32,32 +30,39 @@ public class CommonOffer1Test extends AbstractTestNGSpringContextTests {
 		OfferBuilder commonOffer1() {
 			return new CommonOffer1();
 		}
+
 		@Bean
 		@Qualifier("offer1")
 		OfferBuilder offerBuilder() {
 			return new Offer1();
 		}
+
 		@Bean
 		OfferParser offerParser() {
 			return new OfferParser();
 		}
+
 		@Bean
 		RuntimeSyntaxBuilder runtimeSyntaxBuilder() {
 			return new RuntimeSyntaxBuilder();
 		}
+
 		@Bean
 		OfferDetailToSqlBridge offerDetailToSqlBridge() {
 			return new OfferDetailToSqlBridge();
 		}
+
 		@Bean
 		SQLClauseBuilder sqlClauseBuilder() {
 			return new SQLClauseBuilder();
 		}
+
 		@Bean
 		SQLStatementBuilder sqlStatementBuilder() {
 			return new SQLStatementBuilder();
 		}
 	}
+
 	@Autowired
 	@Qualifier("commonOffer1")
 	private OfferBuilder commonOffer1;
@@ -68,17 +73,17 @@ public class CommonOffer1Test extends AbstractTestNGSpringContextTests {
 	private OfferParser op;
 	@Autowired
 	private RuntimeSyntaxBuilder rb;
-	
+
 	@BeforeClass
 	public void init() {
 		op.setFilename("input/offer.csv");
 	}
+
 	@Test
 	public void testOffer1() {
 		List<OfferSpecification> offers = op.parse();
-		Map<String, String> sqls = rb.build(offers);
-		for (Entry<String, String> s: sqls.entrySet()) {
-			System.out.println(s.getKey()+"=>  "+ Utility.prettyPrint(s.getValue()));
-		}
+		String stmt = rb.build(offers);
+		System.out.println("=>  " + Utility.prettyPrint(stmt));
+
 	}
 }

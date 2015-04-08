@@ -10,6 +10,7 @@ import com.att.datalake.loco.exception.LocoException;
 import com.att.datalake.loco.exception.OfferRepoCode1600;
 import com.att.datalake.loco.offerconfiguration.model.Offer;
 import com.att.datalake.loco.offerconfiguration.model.OfferComponent;
+import com.att.datalake.loco.offerconfiguration.model.OfferCriteria;
 
 /**
  * implementation class for all db interactions
@@ -23,6 +24,8 @@ public class OfferDAO {
 	private OfferComponentRepository compRepo;
 	@Autowired
 	private OfferRepository offerRepo;
+	@Autowired
+	private OfferCriteriaRepository criteriaRepo;
 	/**
 	 * find by local directory. BAsed on the file picked up, we can get the dir
 	 * and from there we would like to find the offer component.
@@ -70,5 +73,14 @@ public class OfferDAO {
 	}
 	public long countComponents() {
 		return compRepo.count();
+	}
+	public OfferCriteria findByCriteriaId(String id) {
+		if (StringUtils.isEmpty(id)) {
+			throw new LocoException(OfferRepoCode1600.OFFER_ID_NOT_VALID);
+		}
+		return criteriaRepo.findOne(id);		
+	}
+	public OfferCriteria saveCriteria(OfferCriteria criteria) {
+		return criteriaRepo.save(criteria);
 	}
 }

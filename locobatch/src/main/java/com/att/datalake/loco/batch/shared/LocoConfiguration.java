@@ -21,6 +21,10 @@ import com.att.datalake.loco.preproc.model.PreProcSpec;
 public class LocoConfiguration {
 
 	Map<String, RuntimeData> configMap;
+	/**
+	 * this is the offer criteria SQL which is just a single statement
+	 */
+	String offerCriteriaSql;
 	
 	public LocoConfiguration() {
 		configMap = new HashMap<String, LocoConfiguration.RuntimeData>();
@@ -50,6 +54,19 @@ public class LocoConfiguration {
 		for (Entry<String, RuntimeData> e: configMap.entrySet()) {
 			if (!StringUtils.isEmpty(e.getValue().getPreProcSql())) {
 				sqls.put(e.getKey(), e.getValue().getPreProcSql());
+			}
+		}
+		return sqls;
+	}
+	/**
+	 * get offer criterion sql for each offer
+	 * @return
+	 */
+	public Map<String, String> getCriterionSqls() {
+		Map<String, String> sqls = new HashMap<String, String>();
+		for (Entry<String, RuntimeData> e: configMap.entrySet()) {
+			if (!StringUtils.isEmpty(e.getValue().getCriteriaSql())) {
+				sqls.put(e.getKey(), e.getValue().getCriteriaSql());
 			}
 		}
 		return sqls;
@@ -90,5 +107,13 @@ public class LocoConfiguration {
 		public void setCriteriaSql(String criteriaSql) {
 			this.criteriaSql = criteriaSql;
 		}
+	}
+
+	public String getOfferCriteriaSql() {
+		return offerCriteriaSql;
+	}
+
+	public void setOfferCriteriaSql(String offerCriteriaSql) {
+		this.offerCriteriaSql = offerCriteriaSql;
 	}
 }

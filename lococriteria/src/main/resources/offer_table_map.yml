@@ -1,0 +1,4 @@
+# map of offers to their individual final tables.
+offers:
+ offerId: ABCDEFGHIJ1234567893
+ table: ameet.loco_offer1

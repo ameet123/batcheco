@@ -19,6 +19,7 @@ import com.att.datalake.loco.batch.step.Step11;
 import com.att.datalake.loco.batch.step.Step12;
 import com.att.datalake.loco.batch.step.Step13;
 import com.att.datalake.loco.batch.step.Step20;
+import com.att.datalake.loco.batch.step.Step21;
 
 /**
  * here we actually create and spawn a specific job
@@ -48,6 +49,8 @@ public class BatchConfiguration {
 	private Step13 step13;
 	@Autowired
 	private Step20 step20;
+	@Autowired
+	private Step21 step21;
 	
 	@Value("${offer.file:input/offer.csv}")
 	private String filename;
@@ -91,6 +94,7 @@ public class BatchConfiguration {
 		next(step13.build()).
 		// Hive preprocessor logic
 		next(step20.build()).
+		next(step21.build()).
 		end().
 		build();
 	}

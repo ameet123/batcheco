@@ -1,8 +1,7 @@
 package com.att.datalake.loco.offercriteria;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +11,9 @@ import org.springframework.stereotype.Component;
 
 import com.att.datalake.loco.offercriteria.impl.OfferBuilder;
 import com.att.datalake.loco.offercriteria.model.OfferSpecification;
+import com.att.datalake.loco.sqlgenerator.SQLClauseBuilder;
+import com.att.datalake.loco.util.OfferConstants;
+import com.att.datalake.loco.util.Utility;
 
 /**
  * given an {@link OfferSpecification} Json object, iterate over the offers and for each one,
@@ -31,15 +33,19 @@ public class RuntimeSyntaxBuilder {
 	@Autowired
 	@Qualifier("commonOffer1")
 	private OfferBuilder commonOffer1;
+	@Autowired
+	private SQLClauseBuilder sql;
 	/**
-	 * given a list of offer specification, build a map 
-	 * of OfferID=>sql. 
+	 * given a list of offer specification, build a final unioned sql 
+	 * comprised of all individual offer tables joined by union
+	 * which will be inserted into final offer table. 
+	 * 
 	 * @param offers
 	 * @return
 	 */
-	public Map<String, String> build(List<OfferSpecification> offers) {
+	public String build(List<OfferSpecification> offers) {
 		String offerId;
-		Map<String, String> offerSqlMap = new HashMap<String, String>();
+		List<String> offerSqls = new ArrayList<String>();
 		for (OfferSpecification o: offers) {
 			offerId = o.getOfferId();
 			String offerClass = OfferIdToImplMap.OFFER_BUILDER_MAP.get(offerId);
@@ -56,8 +62,14 @@ public class RuntimeSyntaxBuilder {
 			default:
 				break;
 			}
-			offerSqlMap.put(offerId, sql);
+			offerSqls.add(sql);
 		}
-		return offerSqlMap;
+		return getUnionedWithInsertSql(offerSqls);
+	}
+	private String getUnionedWithInsertSql(List<String> sqls) {
+		String stmt = sql.unionAll(sqls);
+		stmt = sql.insertInto(OfferConstants.OFFER_DAILY_TABLE, stmt, true);
+		LOGGER.debug("Offer criteria sql=>{}", Utility.prettyPrint(stmt));
+		return stmt;
 	}
 }

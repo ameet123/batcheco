@@ -2,8 +2,6 @@ package com.att.datalake.loco;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.annotation.Resource;
 
@@ -87,24 +85,23 @@ public class Application implements CommandLineRunner {
 		System.out.println("Offers Found # " + offers.size());
 		System.out.println("\n\nStep 2: Build runtime Syntax from offer file\n\n");
 		System.out.println(Utility.pad("", 80, '='));
-		Map<String, String> sqls = rb.build(offers);
+		String sqls = rb.build(offers);
 		System.out.println("\n\nStep 3: Execute Map/Reduce processing to build the offers\n\n");
 		System.out.println(equalLine);
 		int i = 1;
-		for (Entry<String, String> s : sqls.entrySet()) {
-			System.out.println("Running Job # " + (i++));
-			System.out.println(s.getKey() + "=>" + Utility.prettyPrint(s.getValue()));
-			ProcessorResult pr = hp.run(new ArrayList<String>() {
-				private static final long serialVersionUID = 1L;
 
-				{
-					add(s.getValue());
-				}
-			}, false);
-			System.out.println("Record count:" + pr.getRecordCount() + " Success:" + pr.isQuerySuccess());
-			if (!pr.isQuerySuccess()) {
-				System.exit(1);
+		System.out.println("Running Job # " + (i++));
+		System.out.println( "=>" + Utility.prettyPrint(sqls));
+		ProcessorResult pr = hp.run(new ArrayList<String>() {
+			private static final long serialVersionUID = 1L;
+
+			{
+				add(sqls);
 			}
+		}, false);
+		System.out.println("Record count:" + pr.getRecordCount() + " Success:" + pr.isQuerySuccess());
+		if (!pr.isQuerySuccess()) {
+			System.exit(1);
 		}
 
 		System.out.println("\n\nStep 4: Extract the offer data to local file system\n\n");

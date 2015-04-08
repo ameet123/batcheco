@@ -12,7 +12,8 @@ public enum FileCode1400 implements ErrorCode {
 	OUTPUT_DIR_CREATION_ERROR(1401, "Could not create output directory, check permissions"),
 	COMPRESS_FILE_CREATION_ERROR(1402,"Could not open output stream to create compress output file"),
 	CONCATENATED_FILE_CREATION_ERROR(1403,"could not create concatenated output file"),
-	CONCATENATE_FILE_ERROR(1404,"Either src/tgt does not exist or append error");
+	CONCATENATE_FILE_ERROR(1404,"Either src/tgt does not exist or append error"),
+	CLASSPATH_FILE_READ_ERROR(1405,"could not read file from classpath");
 
 	private final int number;
 	private final String description;

@@ -14,7 +14,6 @@ import com.att.datalake.loco.exception.OfferSqlConversionCode1300;
 import com.att.datalake.loco.offercriteria.OfferDetailToSqlBridge;
 import com.att.datalake.loco.offercriteria.model.OfferSpecification.Detail;
 import com.att.datalake.loco.sqlgenerator.SQLClauseBuilder;
-import com.att.datalake.loco.util.OfferConstants;
 
 /**
  * some common logic can be abstracted here , thus simplying the actual
@@ -85,16 +84,5 @@ public abstract class AbstractOfferBuilder implements OfferBuilder {
 		resultMap.put("select", select);
 		resultMap.put("selectWithAgg", selectWithAgg);
 		return resultMap;
-	}
-	/**
-	 * get the standard insert part
-	 */
-	protected String getInsertPrefix(String select) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("INSERT OVERWRITE TABLE ");
-		sb.append(OfferConstants.OFFER_DAILY_TABLE);
-		sb.append(" ");
-		sb.append(select);
-		return sb.toString();
 	}
 }

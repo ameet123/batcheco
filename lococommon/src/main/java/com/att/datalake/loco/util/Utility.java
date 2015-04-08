@@ -9,6 +9,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.RandomAccessFile;
+import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -167,5 +168,22 @@ public final class Utility {
 	public static List<String> getStringList(String s) {
 		String[] sArray = s.replaceAll("\\r\\n|\\r|\\n", " ").split(",\\s*(?=([^\\(]*\\([^\\)]*\\))*[^\\)]*$)");
 		return Arrays.asList(sArray);
+	}
+	/**
+	 * read a file from classpath of the class that is passed and return
+	 * a string for all the content
+	 * @param filename
+	 * @param klz
+	 * @return
+	 */
+	public static String classpathFileToString(String filename, Class<?> klz) {
+		URL url = klz.getClassLoader().getResource(filename);
+		String s;
+		try {
+			s = FileUtils.readFileToString(new File(url.getPath()));
+		} catch (IOException e) {
+			throw new LocoException(e, FileCode1400.CLASSPATH_FILE_READ_ERROR);
+		}		
+		return s;
 	}
 }

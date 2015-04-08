@@ -42,6 +42,15 @@ public class Offer1 extends AbstractOfferBuilder {
 		return buildComplete(chargeSql, adjustmentSql, groupBy, selectWithAgg);
 	}
 
+	/**
+	 * we do not add insert into here, since this will be eventually unioned with
+	 * other offer tables
+	 * @param s1
+	 * @param s2
+	 * @param groupBy
+	 * @param select
+	 * @return
+	 */
 	private String buildComplete(String s1, String s2, String groupBy, String select) {
 		complete.reset();
 		complete.doFrom(offerToSql.unionFrom(s1, s2));
@@ -51,8 +60,6 @@ public class Offer1 extends AbstractOfferBuilder {
 		if (LOGGER.isTraceEnabled()) {
 			LOGGER.trace(Utility.prettyPrint(sql));
 		}
-		// add the insert part
-		sql = super.getInsertPrefix(sql);
 		return sql;
 	}
 

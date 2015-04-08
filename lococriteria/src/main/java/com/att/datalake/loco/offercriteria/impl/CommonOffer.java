@@ -46,7 +46,6 @@ public abstract class CommonOffer extends AbstractOfferBuilder {
 		complete.doWhere(where);
 		complete.doGroupBy(groupBy);
 		String sql = complete.build();
-		sql = super.getInsertPrefix(sql);
 		return sql;
 	}
 }

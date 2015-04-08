@@ -3,26 +3,25 @@ package com.att.datalake.loco.batch.task;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import com.att.datalake.loco.batch.shared.LocoConfiguration;
-import com.att.datalake.loco.batch.shared.LocoConfiguration.RuntimeData;
 import com.att.datalake.loco.exception.LocoException;
 import com.att.datalake.loco.exception.OfferSqlConversionCode1300;
 import com.att.datalake.loco.offerconfiguration.model.Offer;
+import com.att.datalake.loco.offerconfiguration.model.OfferCriteria;
 import com.att.datalake.loco.offerconfiguration.repository.OfferDAO;
 import com.att.datalake.loco.offercriteria.OfferParser;
 import com.att.datalake.loco.offercriteria.RuntimeSyntaxBuilder;
 import com.att.datalake.loco.offercriteria.model.OfferSpecification;
+import com.att.datalake.loco.util.OfferConstants;
 import com.att.datalake.loco.util.Utility;
 import com.google.gson.Gson;
 
@@ -51,6 +50,9 @@ public class CriteriaLoaderTasklet extends AbstractLocoTasklet {
 	private Gson gson;
 	@Autowired
 	private RuntimeSyntaxBuilder rb;
+	
+	@Value("${extract}")
+	private String extractDir;
 	/**
 	 * to pack data in for downstream processing
 	 */
@@ -82,17 +84,15 @@ public class CriteriaLoaderTasklet extends AbstractLocoTasklet {
 			}
 		}
 		LOGGER.info("{} offer criteria ready for processing", criteria.size());
-		Map<String, String> offerSqlMap = rb.build(criteria);
-		if (offerSqlMap == null || offerSqlMap.size() != criteria.size()) {
+		String offerCriteriaSql = rb.build(criteria);
+		if (StringUtils.isEmpty(offerCriteriaSql)) {
 			throw new LocoException(OfferSqlConversionCode1300.OFFER_CRITERIA_SQL_GEN_ERROR);
 		}
 		// debug
 		if (LOGGER.isDebugEnabled()) {
-			for (Entry<String, String> e: offerSqlMap.entrySet()) {
-				LOGGER.debug(e.getKey()+"=>"+Utility.prettyPrint(e.getValue()));
-			}
+				LOGGER.debug("=>"+Utility.prettyPrint(offerCriteriaSql));
 		}
-		saveSql(offerSqlMap);
+		saveSql(offerCriteriaSql);
 	}
 	/**
 	 * fetch offer from db and create a new one if not found
@@ -130,21 +130,18 @@ public class CriteriaLoaderTasklet extends AbstractLocoTasklet {
 	 * of offers increases, this can be revisited
 	 * @param offerSqlMap
 	 */
-	private void saveSql(Map<String, String> offerSqlMap) {
-		Offer o, saved;
-		String offerId, sql;
-		RuntimeData data;
-		for (Entry<String, String> e: offerSqlMap.entrySet()) {
-			offerId = e.getKey();
-			sql = e.getValue();
-			o = dao.findByOfferId(offerId);
-			LOGGER.debug("Saving newly generated sql for offer:{} to the db", offerId);
-			o.setOfferCriteriaSql(sql);
-			saved = dao.saveOffer(o);
-			Assert.state(saved.getOfferCriteriaSql().equals(sql));
-			// save to local store
-			data = config.get(offerId);
-			data.setCriteriaSql(sql);
+	private void saveSql(String offerCriteriaSql) {
+		// save it
+		config.setOfferCriteriaSql(offerCriteriaSql);
+		OfferCriteria crit = dao.findByCriteriaId(OfferConstants.OFFER_CRITERIA_ID);
+		if (crit == null) {
+			crit = new OfferCriteria();
+			crit.setCriteriaId(OfferConstants.OFFER_CRITERIA_ID);
+			if(StringUtils.isEmpty(extractDir)) {
+				extractDir = OfferConstants.CRIT_LOCAL_EXTRACT_DIR;
+			}
 		}
+		crit.setOfferCriteriaSql(offerCriteriaSql);
+		dao.saveCriteria(crit);
 	}
 }
