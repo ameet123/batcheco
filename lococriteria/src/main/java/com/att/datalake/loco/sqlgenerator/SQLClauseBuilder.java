@@ -255,6 +255,20 @@ public class SQLClauseBuilder {
 		sb.append(query);
 		return sb.toString();
 	}
+	/**
+	 * INSERT OVERWRITE LOCAL DIR method
+	 * @param sql
+	 * @param dir
+	 * @return
+	 */
+	public String writeToLocal(String sql, String dir) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("INSERT OVERWRITE LOCAL DIRECTORY '");
+		sb.append(dir);
+		sb.append("' ");
+		sb.append(sql);
+		return sb.toString();
+	}
 
 	/**
 	 * check whether the passsed table has inline set to true

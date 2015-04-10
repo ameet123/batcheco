@@ -1,19 +1,18 @@
 package com.att.datalake.loco.batch.task;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import com.att.datalake.loco.batch.shared.LocoConfiguration;
-import com.att.datalake.loco.batch.shared.LocoConfiguration.RuntimeData;
-import com.att.datalake.loco.offerconfiguration.model.Offer;
+import com.att.datalake.loco.exception.LocoException;
+import com.att.datalake.loco.exception.OfferParserCode1100;
+import com.att.datalake.loco.offerconfiguration.model.OfferCriteria;
 import com.att.datalake.loco.offerconfiguration.repository.OfferDAO;
+import com.att.datalake.loco.util.OfferConstants;
 
 /**
  * This task follows the {@link CriteriaLoaderTasklet} based step.
@@ -42,24 +41,25 @@ public class CriteriaVerifierTasklet extends AbstractLocoTasklet {
 		return STEP_NAME;
 	}
 
+	/**
+	 * the offer criteria SQL is just one for all offers
+	 * since it contains a union. This is stored at {@link LocoConfiguration#getCriterionSqls()}
+	 * and for the database, there is a separate table {@link OfferCriteria}
+	 */
 	@Override
 	public void process(ChunkContext context) {
-		RuntimeData data;
-		String criteriaSql;
-		// first check local data
-		for (String offerId: config.offerIterator()) {
-			data = config.get(offerId);
-			criteriaSql = data.getCriteriaSql();
-			Assert.state(!StringUtils.isEmpty(criteriaSql));
-			LOGGER.info("Validated offer:{} to have criteria sql", offerId);
+	
+		String criteriaSql = config.getOfferCriteriaSql();
+		String localExtractDir = config.getLocalExtractDir();
+		if (StringUtils.isEmpty(localExtractDir) || StringUtils.isEmpty(criteriaSql)) {
+			throw new LocoException(OfferParserCode1100.CRITERIA_SQL_OR_EXTRACT_DIR_NULL);
 		}
-		// validate db data
-		List<Offer> offers = dao.findAllOffers();
 		
-		for (Offer o: offers) {
-			criteriaSql = o.getOfferCriteriaSql();
-			Assert.state(!StringUtils.isEmpty(criteriaSql));
-			LOGGER.info("Validated offer:{} to have criteria sql stored in the database", o.getOfferId());
+		// validate db data
+		OfferCriteria offerCriterion = dao.findByCriteriaId(OfferConstants.OFFER_CRITERIA_ID);
+		if (StringUtils.isEmpty(offerCriterion.getOfferCriteriaSql()) || StringUtils.isEmpty(offerCriterion.getLocalExtractDir())) {
+			throw new LocoException("From the database", OfferParserCode1100.CRITERIA_SQL_OR_EXTRACT_DIR_NULL);
 		}
+		LOGGER.debug("Local extract dir:{} and criterion SQL validated against config object and database", localExtractDir);
 	}
 }

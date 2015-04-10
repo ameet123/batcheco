@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -51,8 +50,8 @@ public class CriteriaLoaderTasklet extends AbstractLocoTasklet {
 	@Autowired
 	private RuntimeSyntaxBuilder rb;
 	
-	@Value("${extract:OfferConstants.CRIT_LOCAL_EXTRACT_DIR}")
-	private String extractDir;
+//	@Value("${loco.local.extract.dir}")
+	private String extractDir = OfferConstants.CRIT_LOCAL_EXTRACT_DIR;
 	/**
 	 * to pack data in for downstream processing
 	 */
@@ -135,9 +134,6 @@ public class CriteriaLoaderTasklet extends AbstractLocoTasklet {
 		if (crit == null) {
 			crit = new OfferCriteria();
 			crit.setCriteriaId(OfferConstants.OFFER_CRITERIA_ID);
-			if(StringUtils.isEmpty(extractDir)) {
-				extractDir = OfferConstants.CRIT_LOCAL_EXTRACT_DIR;
-			}
 		}
 		crit.setOfferCriteriaSql(offerCriteriaSql);
 		crit.setLocalExtractDir(extractDir);

@@ -9,7 +9,9 @@ package com.att.datalake.loco.exception;
 public enum HiveCode1000 implements ErrorCode {
 
 	METASTORE_ERROR_GETTING_TABLES(1000, "Error getting list of tables by DB using metastore client"), ONLY_ONE_CMD_ALLOWED_IN_HIVE(1001,"run() method takes only one command"),
-	METASTORE_CLIENT_STARTUP_ERROR(1002,"could not start up metastore client based on configuration"), HIVE_CLOSE_SESSION_ERROR(1003,"error while closign hive driver and metastore client, probably innocuous.");
+	METASTORE_CLIENT_STARTUP_ERROR(1002,"could not start up metastore client based on configuration"),
+	HIVE_CLOSE_SESSION_ERROR(1003,"error while closign hive driver and metastore client, probably innocuous."),
+	HIVE_DRIVER_QUERY_FAILED(1004, "Hive SQL failed while running the Driver");
 
 	private final int number;
 	private final String description;

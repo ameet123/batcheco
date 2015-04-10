@@ -17,5 +17,9 @@ public final class OfferConstants {
 	public static final String OFFER_CRITERIA_ID = "LOCO";
 	public static final String CRIT_LOCAL_EXTRACT_DIR = "/user/ac2211/loco_extract";
 	
+	public static final String OFFER_SHIP_DIR = "/user/ac2211/loco_extract_ship";
+	public static final String OFFER_FINAL_FILE = OFFER_SHIP_DIR + "/loco_out.dat";
+	public static final String OFFER_FINAL__COMPRESS_FILE = OFFER_SHIP_DIR + "/loco_out.dat.gz";
+	
 
 }

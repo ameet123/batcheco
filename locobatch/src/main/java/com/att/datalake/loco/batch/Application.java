@@ -29,7 +29,7 @@ import com.att.datalake.loco.batch.util.Constants;
 @ImportResource({"hadoop.xml"})
 public class Application implements CommandLineRunner {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
-
+	
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}

@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 
 import com.att.datalake.loco.batch.shared.LocoConfiguration;
 import com.att.datalake.loco.batch.util.BatchUtility;
+import com.att.datalake.loco.exception.HiveCode1000;
+import com.att.datalake.loco.exception.LocoException;
 import com.att.datalake.loco.mrprocessor.Processor;
 import com.att.datalake.loco.mrprocessor.model.ProcessorResult;
 import com.att.datalake.loco.util.Utility;
@@ -25,8 +27,8 @@ import com.att.datalake.loco.util.Utility;
  *
  */
 @Component
-public class HiveProcessorTasklet extends AbstractLocoTasklet {
-	private static final Logger LOGGER = LoggerFactory.getLogger(HiveProcessorTasklet.class);
+public class PreProcSqlRunnerTasklet extends AbstractLocoTasklet {
+	private static final Logger LOGGER = LoggerFactory.getLogger(PreProcSqlRunnerTasklet.class);
 
 	private final String STEP_NAME = "step-20:hive-preproc-sql-runner";
 
@@ -50,6 +52,9 @@ public class HiveProcessorTasklet extends AbstractLocoTasklet {
 			LOGGER.info("Processing pre-requisite SQL for offer:{}", e.getKey());
 			hp.setOutput(BatchUtility.getHiveLogFile(context));
 			ProcessorResult pr = hp.run(sql, false);
+			if (!pr.isQuerySuccess()) {
+				throw new LocoException("Pre proc sql failed", HiveCode1000.HIVE_DRIVER_QUERY_FAILED);
+			}
 			printResult(pr);
 		}
 	}

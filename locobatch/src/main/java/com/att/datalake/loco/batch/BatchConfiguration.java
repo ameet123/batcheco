@@ -20,6 +20,8 @@ import com.att.datalake.loco.batch.step.Step12;
 import com.att.datalake.loco.batch.step.Step13;
 import com.att.datalake.loco.batch.step.Step20;
 import com.att.datalake.loco.batch.step.Step21;
+import com.att.datalake.loco.batch.step.Step30;
+import com.att.datalake.loco.batch.step.Step31;
 
 /**
  * here we actually create and spawn a specific job
@@ -51,6 +53,11 @@ public class BatchConfiguration {
 	private Step20 step20;
 	@Autowired
 	private Step21 step21;
+	
+	@Autowired
+	private Step30 step30;
+	@Autowired
+	private Step31 step31;
 	
 	@Value("${offer.file:input/offer.csv}")
 	private String filename;
