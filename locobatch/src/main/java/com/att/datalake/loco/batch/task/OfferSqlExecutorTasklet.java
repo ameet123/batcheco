@@ -2,7 +2,6 @@ package com.att.datalake.loco.batch.task;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,15 +42,14 @@ public class OfferSqlExecutorTasklet extends AbstractLocoTasklet {
 
 	@Override
 	public void process(ChunkContext context) {
-		for (Entry<String, String> e : config.getCriterionSqls().entrySet()) {
-			List<String> sql = new ArrayList<String>();
-			sql.add(e.getValue());
-			LOGGER.info("Executing offer criterion SQL for offer:{} \nSQL=>\n{}\n", e.getKey(),
-					Utility.prettyPrint(e.getValue()));
-			hp.setOutput(BatchUtility.getHiveLogFile(context));
-			ProcessorResult pr = hp.run(sql, false);
-			printResult(pr);
-		}
+		String s = config.getOfferCriteriaSql();
+		List<String> sql = new ArrayList<String>();
+		sql.add(s);
+		LOGGER.info("Executing offer criterion SQL \nSQL=>\n{}\n", Utility.prettyPrint(s));
+		hp.setOutput(BatchUtility.getHiveLogFile(context));
+		ProcessorResult pr = hp.run(sql, false);
+		printResult(pr);
+		
 	}
 
 	private void printResult(ProcessorResult pr) {

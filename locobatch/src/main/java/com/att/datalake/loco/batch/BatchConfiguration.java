@@ -101,7 +101,11 @@ public class BatchConfiguration {
 		next(step13.build()).
 		// Hive preprocessor logic
 		next(step20.build()).
+		// final offer
 		next(step21.build()).
+		// extraction
+		next(step30.build()).
+		next(step31.build()).
 		end().
 		build();
 	}

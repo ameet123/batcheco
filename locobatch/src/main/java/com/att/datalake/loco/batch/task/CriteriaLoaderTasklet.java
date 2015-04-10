@@ -51,7 +51,7 @@ public class CriteriaLoaderTasklet extends AbstractLocoTasklet {
 	private RuntimeSyntaxBuilder rb;
 	
 //	@Value("${loco.local.extract.dir}")
-	private String extractDir = OfferConstants.CRIT_LOCAL_EXTRACT_DIR;
+	private String extractDir = OfferConstants.OFFER_EXTRACT_DIR;
 	/**
 	 * to pack data in for downstream processing
 	 */

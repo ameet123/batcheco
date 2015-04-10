@@ -75,10 +75,7 @@ public class CriteriaSqlExtractor extends AbstractLocoTasklet {
 		sb.append("\n");
 		sb.append(hdr + "\n");
 		sb.append("\tStatus:" + ((pr.isQuerySuccess()) ? "SUCCESS" : "FAILURE"));
-		sb.append("\n\tTable:");
-		sb.append(pr.getTable());
-		sb.append(" num rows:" + pr.getNumRows());
-		sb.append(" num files:" + pr.getNumFiles());
+		// no table or rows are reported
 		sb.append("\n" + hdr);
 		LOGGER.info(sb.toString());
 	}

@@ -79,13 +79,21 @@ public class HiveProcessor implements Processor {
 		Pattern p = Pattern.compile("Table (.*) stats:.*numFiles=([0-9]*), numRows=([0-9]*)");
 		Matcher m = p.matcher(output);
 		String table = null;
+		String localDir;
 		int rows = 0, files = 0;
 		if (m.find()) {
 			table = m.group(1);
 			files = Integer.parseInt(m.group(2));
 			rows = Integer.parseInt(m.group(3));			
 		} else {
-			LOGGER.error("row and file stats not found in stdout");
+			Pattern localDirPattern = Pattern.compile("local directory (.*)$");
+			m = localDirPattern.matcher(output);
+			if (m.find()) {
+				localDir = m.group(1); 
+				LOGGER.info("Offer data copied to local directory:{}", localDir);
+			} else {
+				LOGGER.error("Neither row/file stats nor local directory was found in stdout");
+			}
 		}
 		pr.setNumFiles(files);
 		pr.setNumRows(rows);
