@@ -51,7 +51,7 @@ public class CriteriaLoaderTasklet extends AbstractLocoTasklet {
 	@Autowired
 	private RuntimeSyntaxBuilder rb;
 	
-	@Value("${extract}")
+	@Value("${extract:OfferConstants.CRIT_LOCAL_EXTRACT_DIR}")
 	private String extractDir;
 	/**
 	 * to pack data in for downstream processing
@@ -130,9 +130,7 @@ public class CriteriaLoaderTasklet extends AbstractLocoTasklet {
 	 * of offers increases, this can be revisited
 	 * @param offerSqlMap
 	 */
-	private void saveSql(String offerCriteriaSql) {
-		// save it
-		config.setOfferCriteriaSql(offerCriteriaSql);
+	private void saveSql(String offerCriteriaSql) {	
 		OfferCriteria crit = dao.findByCriteriaId(OfferConstants.OFFER_CRITERIA_ID);
 		if (crit == null) {
 			crit = new OfferCriteria();
@@ -142,6 +140,12 @@ public class CriteriaLoaderTasklet extends AbstractLocoTasklet {
 			}
 		}
 		crit.setOfferCriteriaSql(offerCriteriaSql);
+		crit.setLocalExtractDir(extractDir);
+		crit.setOfferDailyTable(OfferConstants.OFFER_DAILY_TABLE);
 		dao.saveCriteria(crit);
+		
+		config.setOfferCriteriaSql(offerCriteriaSql);
+		config.setLocalExtractDir(extractDir);
+		config.setOfferDailyTable(OfferConstants.OFFER_DAILY_TABLE);
 	}
 }

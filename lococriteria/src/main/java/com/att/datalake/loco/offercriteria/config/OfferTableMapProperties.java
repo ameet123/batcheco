@@ -4,7 +4,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.yaml.snakeyaml.Yaml;
 
@@ -15,10 +14,10 @@ import com.att.datalake.loco.util.Utility;
 /**
  * read offertable map properties file and extract
  * the map of offer id to individual offer hive table
+ * NOT IN USE
  * @author ac2211
  *
  */
-@Component
 public class OfferTableMapProperties {
 	private static final Logger LOGGER = LoggerFactory.getLogger(OfferTableMapProperties.class);
 	

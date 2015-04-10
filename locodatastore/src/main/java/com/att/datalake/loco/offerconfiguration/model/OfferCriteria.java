@@ -27,6 +27,12 @@ public class OfferCriteria {
 	@LastModifiedDate
 	Date lastModified;
 	
+	/**
+	 * table name for the final daily offer table
+	 */
+	@Column
+	String offerDailyTable;
+	
 	@Column(length=20000)
 	String offerCriteriaSql;
 	
@@ -55,5 +61,13 @@ public class OfferCriteria {
 
 	public void setLocalExtractDir(String localExtractDir) {
 		this.localExtractDir = localExtractDir;
+	}
+
+	public String getOfferDailyTable() {
+		return offerDailyTable;
+	}
+
+	public void setOfferDailyTable(String offerDailyTable) {
+		this.offerDailyTable = offerDailyTable;
 	}		
 }

@@ -24,7 +24,8 @@ public enum OfferParserCode1100 implements ErrorCode {
 	PREPROC_JOIN_TO_UNION_MISMATCH(1114,"no individual sql found for table from union list"),
 	PREPROC_OPERATIONS_NOT_COMPLETE(1115,"without a union, there should be only one merge operation, we don't know how to process multiple independent sqls"),
 	PREPROC_COL_SPLIT_ERROR(1116, "preprocessing column in left or right table erroneously split, possibly broken on inside comma"),
-	PREPROC_MULTIPLE_INSERT_INTO_INVALID(1117, "only one insert into clause is allowed, please check the preproc file specification");
+	PREPROC_MULTIPLE_INSERT_INTO_INVALID(1117, "only one insert into clause is allowed, please check the preproc file specification"),
+	CRITERIA_SQL_OR_EXTRACT_DIR_NULL(1118,"criteria sql not parsed or extract dir was null");
 
 	private final int number;
 	private final String description;

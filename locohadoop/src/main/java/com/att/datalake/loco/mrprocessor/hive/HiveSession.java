@@ -1,6 +1,6 @@
 package com.att.datalake.loco.mrprocessor.hive;
 
-import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PreDestroy;
 
@@ -61,8 +61,8 @@ public class HiveSession {
 		}
 		state = SessionState.start(new CliSessionState(hiveConf));
 	}
-	public List<MapRedStats> getStats() {
-		return state.getLastMapRedStatsList();
+	public Map<String, MapRedStats> getStats() {
+		return state.getMapRedStats();
 	}
 
 	/**

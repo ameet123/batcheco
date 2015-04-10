@@ -24,7 +24,9 @@ public class LocoConfiguration {
 	/**
 	 * this is the offer criteria SQL which is just a single statement
 	 */
-	String offerCriteriaSql;
+	private String offerCriteriaSql;
+	private String localExtractDir; 
+	private String offerDailyTable;
 	
 	public LocoConfiguration() {
 		configMap = new HashMap<String, LocoConfiguration.RuntimeData>();
@@ -115,5 +117,21 @@ public class LocoConfiguration {
 
 	public void setOfferCriteriaSql(String offerCriteriaSql) {
 		this.offerCriteriaSql = offerCriteriaSql;
+	}
+
+	public String getLocalExtractDir() {
+		return localExtractDir;
+	}
+
+	public void setLocalExtractDir(String localExtractDir) {
+		this.localExtractDir = localExtractDir;
+	}
+
+	public String getOfferDailyTable() {
+		return offerDailyTable;
+	}
+
+	public void setOfferDailyTable(String offerDailyTable) {
+		this.offerDailyTable = offerDailyTable;
 	}
 }

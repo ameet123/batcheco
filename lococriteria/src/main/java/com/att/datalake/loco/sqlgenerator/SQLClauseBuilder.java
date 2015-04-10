@@ -1,6 +1,7 @@
 package com.att.datalake.loco.sqlgenerator;
 
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -137,6 +138,24 @@ public class SQLClauseBuilder {
 		return sb.toString();
 	}
 
+	/**
+	 * convenience method to return SELECT * FROM <TABLE>;
+	 * @param table
+	 * @return
+	 */
+	public String selectAllFrom(String table) {
+		Map<String, String> colMap = new HashMap<String, String>();
+		colMap.put("*", null);
+		String sel = select(colMap, null);
+		colMap = new HashMap<String, String>();
+		colMap.put(table, null);
+		String from = from(colMap, null);
+		StringBuilder sb = new StringBuilder();
+		sb.append(sel);
+		sb.append(" ");
+		sb.append(from);
+		return sb.toString();
+	}
 	/**
 	 * given a map of columns and aliases , generate group by clause alias is
 	 * optional
