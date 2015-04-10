@@ -55,6 +55,10 @@ public class DataPackerTasklet extends AbstractLocoTasklet {
 		boolean status;
 		// the extract process creates a .crc file, which we want to avoid
 		File[] files = Utility.listFiles(config.getLocalExtractDir(), ".");
+		LOGGER.info("Concatenating output files into a single one:{}", OfferConstants.OFFER_FINAL_FILE);
+		if (new File(OfferConstants.OFFER_FINAL_FILE).delete()) {
+			LOGGER.debug("Deleted pre-existing file:{}", OfferConstants.OFFER_FINAL_FILE);
+		}
 		status = Utility.concatenateFiles(files, OfferConstants.OFFER_FINAL_FILE);
 		// get line count
 		int cnt = Utility.getLineCount(OfferConstants.OFFER_FINAL_FILE);
