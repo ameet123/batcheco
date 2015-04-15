@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<!--  simple
+	<property name="CONSOLE_LOG_PATTERN"
+		value="%d{MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg%n" />
+	<property name="FILE_LOG_PATTERN"
+		value="%d{MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg%n" />
+		
+		   original
+		<property name="CONSOLE_LOG_PATTERN"
+		value="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID:- }){magenta} %clr(THREE_DASHES){faint} %clr([%15.15t{14}]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n%wex" />
+	<property name="FILE_LOG_PATTERN"
+		value="[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-4relative [%thread] %-5level %logger{35} - %msg%n" />
+		-->
+	<property name="CONSOLE_LOG_PATTERN"
+		value="%clr(%d{MM-dd HH:mm:ss.SSS}){faint} %clr([%t{10}]){faint} %-5level %clr(%-35.35logger{35}){cyan} %clr(:){faint} %m%n%wex" />
+	<property name="FILE_LOG_PATTERN"
+		value="[%d{MM-dd HH:mm:ss.SSS}] %-4relative [%thread] %-5level %logger{35} - %msg%n" />
+
+	<conversionRule conversionWord="clr"
+		converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+	<conversionRule conversionWord="wex"
+		converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder 
+			by default -->
+		<encoder>
+			<pattern>${CONSOLE_LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>logs/main/loco.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>logs/main/loco.%d{yyyy-MM-dd}.log</fileNamePattern>
+
+			<!-- keep 30 days' worth of history -->
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+
+		<encoder>
+			<pattern>${FILE_LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+
+	<appender name="ERRORS_FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>logs/errors/loco_error.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>logs/errors/loco_error.%d{yyyy-MM-dd}.log
+			</fileNamePattern>
+
+			<!-- keep 30 days' worth of history -->
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+
+		<encoder>
+			<pattern>${FILE_LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+
+	<!-- Application Loggers -->
+
+	<logger name="com.att.datalake.loco">
+		<level value="debug" />
+		<appender-ref ref="FILE" />
+	</logger>
+
+	<logger name="org.springframework">
+		<level value="error" />
+		<appender-ref ref="FILE" />
+	</logger>
+	<logger name="org.springframework.context.annotation.ConfigurationClassEnhancer">
+		<level value="error" />
+		<appender-ref ref="FILE" />
+	</logger>
+
+	<logger name="ch.qos.logback">
+		<level value="error" />
+		<appender-ref ref="FILE" />
+	</logger>
+
+	<logger name="org.hibernate">
+		<level value="warn" />
+	</logger>
+	<logger name="org.thymeleaf">
+		<level value="warn" />
+	</logger>
+
+	<root level="info">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
+	</root>
+
+</configuration>
