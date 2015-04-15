@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.att.datalake.loco.offerconfiguration.model.Offer;
+import com.att.datalake.loco.offerconfiguration.repository.BatchJobDAO;
 import com.att.datalake.loco.offerconfiguration.repository.OfferDAO;
 
 @SpringBootApplication
 @ComponentScan({"com.att.datalake.loco.offerconfiguration", "com.att.datalake.loco.batchadmin"})
-//@EnableConfigurationProperties
 public class Application {
 
 	public static void main(String[] args) {
@@ -41,6 +41,8 @@ class RestApiController {
 	
 	@Autowired
 	private OfferDAO dao;
+	@Autowired
+	private BatchJobDAO batchDao;
 	
 	@RequestMapping("/inner")
 	public List<String> api() {
@@ -53,6 +55,11 @@ class RestApiController {
 	@RequestMapping("/offerCount")
 	public int getOfferCount() {
 		return (int) dao.countOffers();
+	}
+	
+	@RequestMapping("/jobCount")
+	public int getJobCount() {
+		return (int) batchDao.countJobs();
 	}
 	
 }

@@ -41,7 +41,7 @@ public class Offer {
 	 * the criteria object {@link OfferSpecification} 
 	 * which is turned into a JSON string
 	 */
-	@Column(length = 20000)
+	@Column(length = 15000)
 	String offerCriteria;
 	/**
 	 * how many components does this offer have, useful for triggering the final job

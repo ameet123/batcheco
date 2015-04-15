@@ -6,5 +6,14 @@ locoControllers.controller('offerCtrl', [ '$scope', '$http',
 				$scope.offerCnt = data;
 				console.log("I am in console");
 			})
-			
+
+		} ]);
+
+locoControllers.controller('jobExecCtrl', [ '$scope', '$http',
+		function($scope, $http) {
+			$http.get('/api/jobCount').success(function(data) {
+				$scope.jobCnt = data;
+				console.log("I am in console");
+			})
+
 		} ]);
