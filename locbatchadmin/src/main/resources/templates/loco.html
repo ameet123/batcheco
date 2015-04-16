@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	ng-app="locobatchApp">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Loco Job Admin</title>
+
+<link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="/css/static-footer-navbar.css" rel="stylesheet" />
+<link href="/css/carousel.css" rel="stylesheet" />
+<link href="/css/dashboard.css" rel="stylesheet" />
+<!-- Custom CSS -->
+<link href="/bower_components/startbootstrap-sb-admin-2/dist/css/sb-admin-2.css" rel="stylesheet" />
+<!-- Custom Fonts -->
+<link href="/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+</head>
+<body>
+	<nav class="navbar  navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/"><span class="glyphicon glyphicon-home"></span> Loco Batch Job Admin </a>
+			</div>
+
+			<div class="collapse navbar-collapse">
+				<a th:if="${#httpServletRequest.remoteUser == null}" th:href="@{/login}"
+					class="btn btn-primary navbar-btn pull-right">Login</a>
+				<p class="navbar-text navbar-right" th:if="${#httpServletRequest.remoteUser != null}">
+					<strong>Logged in as <span th:text="${#httpServletRequest.remoteUser}">user</span></strong>
+				</p>
+			</div>
+		</div>
+	</nav>
+
+	<!-- left hand menu -->
+	<div class="container-fluid">
+		<div class="row">
+			<!-- left side menu -->
+			<ng-include src="'/partials/leftsideMenu.html'" />
+
+			<!-- center page -->
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+				<div ng-view=""></div>
+			</div>
+		</div>
+	</div>
+
+
+	<!--  SYSTEM SPECIFIC JAVA SCRIPT -->
+	<script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/bower_components/angular/angular.min.js"></script>
+	<script type="text/javascript" src="/bower_components/angular-route/angular-route.min.js"></script>
+	<script type="text/javascript" src="/bower_components/angular-resource/angular-resource.min.js"></script>
+
+	<!--  APPLICATION SPECIFIC JAVA SCRIPT -->
+	<script type="text/javascript" src="/js/app.js"></script>
+	<script type="text/javascript" src="/js/controllers.js"></script>
+
+</body>
+</html>

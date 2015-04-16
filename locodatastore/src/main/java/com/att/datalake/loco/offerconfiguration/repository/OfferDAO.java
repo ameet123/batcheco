@@ -83,4 +83,7 @@ public class OfferDAO {
 	public OfferCriteria saveCriteria(OfferCriteria criteria) {
 		return criteriaRepo.save(criteria);
 	}
+	public int countCriteriaSql() {
+		return (int) criteriaRepo.count();
+	}
 }

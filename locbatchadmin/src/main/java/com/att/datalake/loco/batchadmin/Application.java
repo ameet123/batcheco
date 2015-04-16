@@ -28,12 +28,12 @@ public class Application {
 @Controller
 @RequestMapping("/")
 class HomeController {
-	
 	@RequestMapping(method=RequestMethod.GET)
 	public String home() {
-		return "home";
+		return "loco";
 	}
 }
+ 
 
 @RestController
 @RequestMapping("/api")
@@ -62,4 +62,8 @@ class RestApiController {
 		return (int) batchDao.countJobs();
 	}
 	
+	@RequestMapping("/criteriaSqlCount")
+	public int getCriteriaCount() {
+		return (int) dao.countCriteriaSql();
+	}
 }
