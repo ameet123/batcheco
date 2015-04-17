@@ -2,6 +2,7 @@ package com.att.datalake.loco.batchadmin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -65,5 +66,9 @@ class RestApiController {
 	@RequestMapping("/criteriaSqlCount")
 	public int getCriteriaCount() {
 		return (int) dao.countCriteriaSql();
+	}
+	@RequestMapping("/allJobs")
+	public List<Map<String, String>> allJobs() {
+		return batchDao.allJobs();
 	}
 }

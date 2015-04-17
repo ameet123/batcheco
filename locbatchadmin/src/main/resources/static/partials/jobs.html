@@ -1,6 +1,20 @@
-<div>
-	<h2>
-		<span class="label label-info">234252525</span>
-	</h2>
-	<h3>from jobs file</h3>
+<div class="row">
+	<table ng-controller="allJobsCtrl" st-table="allJobs" class="table table-striped">
+		<thead>
+			<tr>
+				<th>Job Execution ID</th>
+				<th>start time</th>
+				<th>end time</th>
+				<th>status</th>
+			</tr>
+		</thead>
+		<tbody ng:repeat="i in allJobs">
+			<tr>
+				<td>{{i.jobExecutionId}}</td>
+				<td>{{i.startTime}}</td>
+				<td>{{i.endTime}}</td>
+				<td><small ng-if="i.status=='COMPLETED'" ><span class="glyphicon glyphicon-ok-circle text-success"></span></small><small ng-if="i.status!='COMPLETED'" ><span class="glyphicon glyphicon-remove-circle text-danger"></span></small></td>
+			</tr>
+		</tbody>
+	</table>
 </div>

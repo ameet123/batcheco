@@ -24,6 +24,14 @@ locoControllers.controller('jobExecCtrl', [ '$scope', '$http',
 			})
 		} ]);
 
+locoControllers.controller('allJobsCtrl', [ '$scope', '$http',
+		function($scope, $http) {
+			$http.get('/api/allJobs').success(function(data) {
+				$scope.allJobs = data;
+				console.log("running all jobs");
+			})
+		} ]);
+
 
 /**
  * singular controller for all dashboard queries

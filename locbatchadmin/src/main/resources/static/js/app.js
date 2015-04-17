@@ -3,20 +3,24 @@
  */
 'use strict';
 
-var locobatchApp = angular.module('locobatchApp', [ 'ngRoute',
+var locobatchApp = angular.module('locobatchApp', [ 'ngRoute', 'smart-table',
 		'locoControllers' ]);
 
 
 locobatchApp.config([ '$routeProvider', function($routeProvider) {
 	$routeProvider.
+	when('/BatchFlow', {
+		templateUrl: '/partials/batchflow.html'
+	}).
 	when('/Dashboard', {
 		templateUrl: '/partials/dashboardSnippet.html',
 		controller: 'DashboardCtrl'
 	}).
 	when('/Jobs', {
-		templateUrl: '/partials/jobs.html'
-	}).
+		templateUrl: '/partials/jobs.html',
+		controller: 'allJobsCtrl'
+	}).	
 	otherwise({
-		redirectTo: '/Dashboard'
+		redirectTo: '/BatchFlow'
 	});
 } ]);

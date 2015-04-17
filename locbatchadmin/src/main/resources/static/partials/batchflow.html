@@ -1,0 +1,120 @@
+
+<!-- /.panel -->
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<i class="fa fa-clock-o fa-fw"></i>Loco Batch Flow Steps
+	</div>
+	<!-- /.panel-heading -->
+	<div class="panel-body">
+		<ul class="timeline">
+			<li>
+				<div class="timeline-badge primary">
+					<i class="fa fa-file-text"></i>
+				</div>
+				<div class="timeline-panel">
+					<div class="timeline-heading">
+						<h4 class="timeline-title">Step-0: Offer Criteria File Load/Parse</h4>
+					</div>
+					<div class="timeline-body">
+						<p>Load/parse offer criteria file and create a domain model for it. Build corresponding 
+							SQL &amp; store it in local configuration object as well as database</p>
+					</div>
+				</div>
+			</li>
+			<li class="timeline-inverted">
+				<div class="timeline-badge warning">
+					<i class="fa fa-stethoscope"></i>
+				</div>
+				<div class="timeline-panel">
+					<div class="timeline-heading">
+						<h4 class="timeline-title">Step-1: Criteria verification</h4>
+					</div>
+					<div class="timeline-body">
+						<p>Verify the SQL generated for syntax accuracy. Also check that the criteria for each file are recognizable</p>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="timeline-badge danger">
+					<i class="fa fa-file-text-o"></i>
+				</div>
+				<div class="timeline-panel">
+					<div class="timeline-heading">
+						<h4 class="timeline-title">Step-2: Pre-processing file parser</h4>
+					</div>
+					<div class="timeline-body">
+						<p>Load and parse the pre-processing file and generate a domain model. Save the model in configuration object
+							and the database</p>
+					</div>
+				</div>
+			</li>
+			<li class="timeline-inverted">
+				<div class="timeline-badge warning">
+					<i class="fa fa-stethoscope"></i>
+				</div>
+				<div class="timeline-panel">
+					<div class="timeline-heading">
+						<h4 class="timeline-title">Step-3: Pre-processing verification</h4>
+					</div>
+					<div class="timeline-body">
+						<p>Verify the sequence of steps and the cchronology. Ensure the accuracy.</p>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="timeline-badge info">
+					<i class="fa fa-database"></i>
+				</div>
+				<div class="timeline-panel">
+					<div class="timeline-heading">
+						<h4 class="timeline-title">Step-4: Pre-proceeessing SQL generation</h4>
+					</div>
+					<div class="timeline-body">
+						<p>Based on the domain model, generate SQL for each offer. This sql is responsible for creating the
+							offer-specific file with the uniform desired format, i.e. the list of columns.</p>
+					</div>
+				</div>
+			</li>
+			<li class="timeline-inverted">
+				<div class="timeline-badge primary">
+					<i class="fa fa-gears"></i>
+				</div>
+				<div class="timeline-panel">
+					<div class="timeline-heading">
+						<h4 class="timeline-title">Step-5: Execute pre-processing SQL in Hadoop</h4>
+					</div>
+					<div class="timeline-body">
+						<p>Generate the offer specific table data for each offer using Hive SQL</p>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="timeline-badge success">
+					<i class="fa fa-graduation-cap"></i>
+				</div>
+				<div class="timeline-panel">
+					<div class="timeline-heading">
+						<h4 class="timeline-title">Step-6: Offer Criteria SQL execution</h4>
+					</div>
+					<div class="timeline-body">
+						<p>execute the offer criteria and generate the final daily offer table based on the SQL generated in the very first step.</p>
+					</div>
+				</div>
+			</li>
+			<li class="timeline-inverted">
+				<div class="timeline-badge primary">
+					<i class="fa fa-truck"></i>
+				</div>
+				<div class="timeline-panel">
+					<div class="timeline-heading">
+						<h4 class="timeline-title">Step-7: Extract, consolidate and pack</h4>						
+					</div>
+					<div class="timeline-body">
+						<p>Extract the data from Hadoop to local directory, consolidate it into a single file and compress it if desired. This is now ready for shipping.</p>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+	<!-- /.panel-body -->
+</div>
