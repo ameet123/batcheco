@@ -1,20 +1,29 @@
-<div class="row">
-	<table ng-controller="allJobsCtrl" st-table="allJobs" class="table table-striped">
-		<thead>
-			<tr>
-				<th>Job Execution ID</th>
-				<th>start time</th>
-				<th>end time</th>
-				<th>status</th>
-			</tr>
-		</thead>
-		<tbody ng:repeat="i in allJobs">
-			<tr>
-				<td>{{i.jobExecutionId}}</td>
-				<td>{{i.startTime}}</td>
-				<td>{{i.endTime}}</td>
-				<td><small ng-if="i.status=='COMPLETED'" ><span class="glyphicon glyphicon-ok-circle text-success"></span></small><small ng-if="i.status!='COMPLETED'" ><span class="glyphicon glyphicon-remove-circle text-danger"></span></small></td>
-			</tr>
-		</tbody>
-	</table>
+<div class="container-fluid">
+	<h2>Job History</h2>
+	
+	<div class="panel panel-default row col-md-8" ng-controller="allJobsCtrl">
+	<h4>Total Jobs:{{allJobs.length}}</h4>
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>Job Execution ID</th>
+					<th>start time</th>
+					<th>end time</th>
+					<th>status</th>
+				</tr>
+				<tr>
+				</tr>
+			</thead>
+			<tbody ng-repeat="i in allJobs">
+				<tr>
+					<td>{{i.jobExecutionId}}</td>
+					<td>{{i.startTime | uppercase}}</td>
+					<td>{{i.endTime}}</td>
+					<td><small ng-if="i.status=='COMPLETED'"><span class="glyphicon glyphicon-ok-circle text-success"></span></small><small
+						ng-if="i.status!='COMPLETED'"><span class="glyphicon glyphicon-remove-circle text-danger"></span></small></td>
+				</tr>
+			</tbody>
+			
+		</table>
+	</div>
 </div>

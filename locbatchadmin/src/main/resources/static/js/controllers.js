@@ -16,8 +16,8 @@ locoControllers.controller('criteriaCntCtrl', [ '$scope', '$http',
 			})
 		} ]);
 
-locoControllers.controller('jobExecCtrl', [ '$scope', '$http',
-		function($scope, $http) {
+locoControllers.controller('jobExecCtrl', [ '$scope', '$http', '$filter',
+		function($scope, $http, $filter) {
 			$http.get('/api/jobCount').success(function(data) {
 				$scope.jobCnt = data;
 				console.log("running job count");
@@ -26,10 +26,16 @@ locoControllers.controller('jobExecCtrl', [ '$scope', '$http',
 
 locoControllers.controller('allJobsCtrl', [ '$scope', '$http',
 		function($scope, $http) {
+	 		$scope.filteredJobs = []
+	 		,$scope.currentPage = 1
+	 		,$scope.numPerPage = 10,
+	 		$scope.allJobs=[]
+	 		,$scope.maxSize = 5;
+	 
 			$http.get('/api/allJobs').success(function(data) {
 				$scope.allJobs = data;
 				console.log("running all jobs");
-			})
+			});
 		} ]);
 
 

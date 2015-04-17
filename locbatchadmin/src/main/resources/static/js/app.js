@@ -3,7 +3,7 @@
  */
 'use strict';
 
-var locobatchApp = angular.module('locobatchApp', [ 'ngRoute', 'smart-table',
+var locobatchApp = angular.module('locobatchApp', [ 'ngRoute', 'smart-table','ui.bootstrap',
 		'locoControllers' ]);
 
 
